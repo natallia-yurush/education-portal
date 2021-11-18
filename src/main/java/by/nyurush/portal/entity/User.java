@@ -5,24 +5,49 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.UUID;
 
-@Table(name = "user")
+@Table(name = "user", schema = "public")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
 @Getter
 @Setter
-public class User {
+public class User {//} extends AuditingEntity {
 
-    @Column(name = "id")
+
+
+//    @Id
+//    @GeneratedValue(generator = "UUID")
+//    @GenericGenerator(
+//            name = "UUID",
+//            strategy = "org.hibernate.id.UUIDGenerator"
+//    )
+//    @Column(name = "id", updatable = false, nullable = false)
+//    private UUID id;
     @Id
-    private String id;
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private long id;
+
+//    @Id
+//    @GeneratedValue(generator = "UUID")
+//    @GenericGenerator(
+//            name = "UUID",
+//            strategy = "org.hibernate.id.UUIDGenerator"
+//    )
+//    @Column(name = "id", updatable = false, nullable = false)
+//    private UUID id;
 
     @Column(name = "complete_name")
     private String completeName;
@@ -42,4 +67,6 @@ public class User {
     @Column(name = "role")
     private UserRole role;
 
+    @Column(name = "active")
+    private Boolean active;
 }

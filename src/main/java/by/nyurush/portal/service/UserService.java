@@ -7,6 +7,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.UUID;
+
 @Service
 @AllArgsConstructor
 public class UserService {
@@ -15,9 +18,16 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public User saveUser(User user) {
-        user.setRole(UserRole.ROLE_STUDENT); //todo: set role
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
+    }
+
+    public User findById(Long id) {
+        return userRepository.findById(id).orElseThrow(); //todo add exception
+    }
+
+    public List<User> findAllStudents() {
+        return userRepository.findAllByRole(UserRole.ROLE_STUDENT);
     }
 
     public User findByUsername(String username) {
@@ -33,6 +43,10 @@ public class UserService {
             }
         }
         return null;
+    }
+
+    public void deleteById(Long id) {
+        userRepository.deleteById(id);
     }
 }
 
