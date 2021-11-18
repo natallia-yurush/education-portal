@@ -36,6 +36,13 @@ public class AdminController {
         return "admin/student";
     }
 
+    @GetMapping("/teachers")
+    public String addTeacher(Model model) {
+        model.addAttribute("user", new UserDto());
+        model.addAttribute("teachers", userService.findAllTeachers());
+        return "admin/teacher";
+    }
+
     @PostMapping("/student")
     public String addStudent(@ModelAttribute("user") UserDto userDto) {
         // todo check if user exist
@@ -44,6 +51,16 @@ public class AdminController {
         userService.saveUser(user);
 
         return "redirect:students";
+    }
+
+    @PostMapping("/teacher")
+    public String addTeacher(@ModelAttribute("user") UserDto userDto) {
+        // todo check if user exist
+        User user = conversionService.convert(userDto, User.class);
+        user.setRole(UserRole.ROLE_TEACHER);
+        userService.saveUser(user);
+
+        return "redirect:teachers";
     }
 
     @GetMapping("/user/image/{id}")

@@ -183,38 +183,23 @@
 
                                 <tr th:each="student: ${students}">
                                     <td th:text="${student.id}"/>
-                                    <!-- <img src="data:image/jpg;base64, byte[] "> -->
-                                    <!--                                    <td><img th:src="${student.photo}""></td>-->
-
                                     <td>
                                         <img th:src="@{${'image/display/'+ student.id}}"/>
                                         <img th:src="@{'user/image/' + ${student.id}}">
                                         <img th:src="${'data:image/jpeg;charset=utf-8;base64,' + student.photo}" alt="">
-
                                         <!--                                    <input type="hidden" id="imageBase64" value="${student.photo}" readonly></input>-->
                                         <!--                                    <img id="imagePreview" src="#" alt="Background image" />-->
                                     </td>
-                                    <!--                                    <img th:src="|data:image/jpeg;base64,${student.photo}|"/>-->
-                                    <!--                                    <img th:src="'data:image/jpeg;base64', ${student.photo}"/>-->
-                                    <!--                                    <img th:attr="src=@{'data:image/png;base64,'+${student.photo}}" alt="avatar" height="120" width="120"/>-->
-                                    <!--                                    <td><img th:src="${student.photo}"></td>-->
-
                                     <td th:text="${student.completeName}"/>
                                     <td th:text="${student.email}"/>
-
                                     <td><span class="badge bg-success" th:text="${student.active}"
                                               th:remove="tag">title</span></td>
                                     <td class="text-right">
-
-                                        <!--                                        <a th:href="@{/category/edit/{id}(id=${category.idCategory})}">view</a>-->
-
-                                        <!--todo open save window -->
                                         <a class="btn btn-sm bg3" href="#" data-toggle="modal" data-target="#edit"><i
                                                 class="fa fa-edit"></i> edit</a>
                                         <a class="btn btn-sm bg1" th:href="@{/user/delete/{id}(id=${student.id})}"
                                            data-toggle="modal" data-target="#delete"><i
                                                 class="fa fa-trash-alt"></i> delete</a>
-
                                     </td>
 
                                     <div id="delete" class="modal animated rubberBand delete-modal" role="dialog">
@@ -258,22 +243,18 @@
                                                                     <div class="form-group">
                                                                         <label for="firstName" class="float-left">First
                                                                             Name</label>
-                                                                        <input id="firstName" type="text"
+                                                                        <input id="firstName" name="firstName" type="text"
                                                                                class="form-control"
                                                                                th:value="${#strings.arraySplit(student.completeName, ' ')[0]}"
                                                                                placeholder="first name">
                                                                     </div>
                                                                 </div>
 
-                                                                <!--                                                                th:value="${#strings.arraySplit(student.completeName,' ')[1]}" -->
-
-
-                                                                <!--                                                                th:text="${someObject.someProperty != null} ? ${someObject.someProperty} : 'null value!'"-->
                                                                 <div class="col-md-4">
                                                                     <div class="form-group">
                                                                         <label for="middleName" class="float-left">Middle
                                                                             Name</label>
-                                                                        <input id="middleName" type="text"
+                                                                        <input id="middleName" name="middleName" type="text"
                                                                                th:value="${#strings.arraySplit(student.completeName, ' ')[1]}"
                                                                                class="form-control"
                                                                                placeholder="middle name">
@@ -283,7 +264,7 @@
                                                                     <div class="form-group">
                                                                         <label for="lastName" class="float-left">Last
                                                                             Name</label>
-                                                                        <input id="lastName"
+                                                                        <input id="lastName" name="lastName"
                                                                                th:value="${#strings.arraySplit(student.completeName, ' ')[2]}"
                                                                                type="text" class="form-control"
                                                                                placeholder="last name">
@@ -294,7 +275,7 @@
                                                                     <div class="form-group">
                                                                         <label for="email"
                                                                                class="float-left">Email</label>
-                                                                        <input id="email" type="email"
+                                                                        <input id="email" name="email" type="email"
                                                                                class="form-control"
                                                                                th:value="${student.email}"
                                                                                placeholder="ex. john@gmail.com">
@@ -303,9 +284,9 @@
 
                                                                 <div class="col-md-12">
                                                                     <div class="form-group">
-                                                                        <label for="image"
+                                                                        <label for="photo"
                                                                                class="float-left">Profile</label>
-                                                                        <input id="image" type="file"
+                                                                        <input id="photo" name="photo" type="file"
                                                                                th:value="${student.photo}"
                                                                                class="form-control">
                                                                     </div>
@@ -320,20 +301,16 @@
                                                                 <div class="col-md-6">
                                                                     <div class="form-group">
                                                                         <label for="username" class="float-left">Username</label>
-                                                                        <input id="username"
+                                                                        <input id="username" name="username"
                                                                                th:value="${student.username}"
                                                                                type="text" class="form-control"
                                                                                placeholder="username">
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group">
-                                                                        <label for="password" class="float-left">Password</label>
-                                                                        <input id="password" type="text"
-                                                                               class="form-control"
-                                                                               placeholder="**********">
-                                                                    </div>
-                                                                </div>
+
+                                                                <input class="form-control"
+                                                                       type="hidden"
+                                                                       th:value="${student.password}" id="password" name="password" />
                                                             </div>
 
                                                         </div>
@@ -371,21 +348,6 @@
 </div>
 <!-- /.content-wrapper -->
 </div>
-<!-- ./wrapper -->
-<!--<div id="delete" class="modal animated rubberBand delete-modal" role="dialog">-->
-<!--    <div class="modal-dialog modal-dialog-centered">-->
-<!--        <div class="modal-content">-->
-<!--            <div class="modal-body text-center">-->
-<!--                <img src="/img/sent.png" alt="" width="50" height="46">-->
-<!--                <h3>Are you sure want to delete this Student?</h3>-->
-<!--                <div class="m-t-20"><a href="#" class="btn btn-white" data-dismiss="modal">Close</a>-->
-<!--                    <button type="submit" class="btn bg1">Delete</button>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
-
 
 <div id="add" class="modal animated rubberBand delete-modal" role="dialog">
     <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -421,15 +383,7 @@
                                            th:field="*{lastName}">
                                 </div>
                             </div>
-                            <!--                            <div class="col-md-6">-->
-                            <!--                                <div class="form-group">-->
-                            <!--                                    <label class="float-left">Course</label>-->
-                            <!--                                    <select class="form-control">-->
-                            <!--                                        <option>Course 1</option>-->
-                            <!--                                        <option>Course 2</option>-->
-                            <!--                                    </select>-->
-                            <!--                                </div>-->
-                            <!--                            </div>-->
+
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="Uemail" class="float-left">Email</label>

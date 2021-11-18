@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
+import static java.util.Objects.isNull;
+
 @Service
 @AllArgsConstructor
 public class UserService {
@@ -18,7 +20,9 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public User saveUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if(isNull(user.getId())) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
         return userRepository.save(user);
     }
 
@@ -28,6 +32,10 @@ public class UserService {
 
     public List<User> findAllStudents() {
         return userRepository.findAllByRole(UserRole.ROLE_STUDENT);
+    }
+
+    public List<User> findAllTeachers() {
+        return userRepository.findAllByRole(UserRole.ROLE_TEACHER);
     }
 
     public User findByUsername(String username) {
