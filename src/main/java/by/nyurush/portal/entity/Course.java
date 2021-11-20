@@ -12,39 +12,25 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
-@Table(name = "user", schema = "public")
+@Table(name = "course", schema = "public")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
 @Getter
 @Setter
-public class User {
+public class Course {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "complete_name")
-    private String completeName;
+    @Column(name = "name", unique = true)
+    private String name;
 
-    @Column(name = "email")
-    private String email;
-
-    @Column(name = "photo")
-    private byte[] photo;
-
-    @Column(name = "username")
-    private String username;
-
-    @Column(name = "password")
-    private String password;
-
-    @Column(name = "role")
-    private UserRole role;
-
-    @Column(name = "active")
-    private boolean active;
+    @Column(name = "description")
+    private String description;
 }

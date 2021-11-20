@@ -5,10 +5,10 @@
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <title>Exam Management System</title>
       <!-- Font Awesome -->
-      <link rel="stylesheet" href="fontawesome/css/all.min.css">
-      <link rel="stylesheet" href="css/adminlte.min.css">
-            <link rel="stylesheet" href="css/style.css">
-            <link rel="stylesheet" href="tables/datatables-bs4/css/dataTables.bootstrap4.min.css">
+      <link rel="stylesheet" href="/fontawesome/css/all.min.css">
+      <link rel="stylesheet" href="/css/adminlte.min.css">
+            <link rel="stylesheet" href="/css/style.css">
+            <link rel="stylesheet" href="/tables/datatables-bs4/css/dataTables.bootstrap4.min.css">
             <style type="text/css">
                td a.btn{
                   font-size: 0.7rem;
@@ -66,7 +66,7 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: rgba(39,93,43);">
                  <!-- Brand Logo -->
      <a href="index.html" class="brand-link animated swing">
-     <img src="img/logo.png" alt="DSMS Logo" width="200" style="margin-bottom: -50px;">
+     <img src="/img/logo.png" alt="DSMS Logo" width="200" style="margin-bottom: -50px;">
      </a>
      <!-- Sidebar -->
      <div class="sidebar">
@@ -155,7 +155,7 @@
             <div class="container-fluid">
                <div class="card card-info">
                   <!-- form start -->
-                  <form>
+                  <form method="post" th:action="@{/admin/course}" th:object="${course}">
                      <div class="card-body">
                         <div class="row">
                            <div class="col-md-3">
@@ -166,19 +166,19 @@
                                  <div class="col-md-12">
                                     <div class="form-group">
                                        <label>Course Name</label>
-                                       <input type="text" class="form-control" placeholder="ex. BS Com Eng'g">
+                                       <input type="text" class="form-control" placeholder="Course Name" th:field="*{name}">
                                     </div>
                                  </div>
                                  <div class="col-md-12">
                                     <div class="form-group">
                                        <label>Description</label>
-                                       <textarea class="form-control"></textarea>
+                                       <textarea class="form-control" th:field="*{description}"></textarea>
                                     </div>
                                  </div>
                               </div>
                               <div class="col-md-12">
                                  <button type="submit" class="btn bg2">Save</button>
-                                 <button type="submit" class="btn bg1">Cancel</button>
+                                 <div class="m-t-20"><a class="btn btn-white" data-dismiss="modal">Cancel</a></div>
                               </div>
                   </form>
                </div>
@@ -193,51 +193,40 @@
                         </tr>
                      </thead>
                      <tbody>
-                        <tr>
-                           <td>BSIT</td>
-                           <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</td>
+
+
+                        <tr th:each="course: ${courses}">
+
+                           <td th:text="${course.name}"/>
+                           <td th:text="${course.description}"/>
                            <td class="text-right">
                               <a class="btn btn-sm bg3" href="#"><i class="fa fa-edit"></i> edit</a>
-                              <a class="btn btn-sm bg1" href="#" data-toggle="modal" data-target="#delete"><i
-                                    class="fa fa-trash-alt"></i> delete</a>
+                              <a class="btn btn-sm bg1" th:href="@{/course/delete/{id}(id=${course.id})}"
+                                 data-toggle="modal" data-target="#delete"><i
+                                      class="fa fa-trash-alt"></i> delete</a>
                            </td>
+
+                           <!-- ./wrapper -->
+                           <div id="delete" class="modal animated rubberBand delete-modal" role="dialog">
+                              <div class="modal-dialog modal-dialog-centered">
+                                 <div class="modal-content">
+                                    <div class="modal-body text-center">
+                                       <img src="/img/sent.png" alt="" width="50" height="46">
+                                       <h3>Are you sure want to delete this Course?</h3>
+                                       <form action="#" th:action="@{${'course/delete/'+ course.id}}"
+                                             th:method="post">
+                                       <div class="m-t-20"> <a href="#" class="btn btn-white" data-dismiss="modal">Close</a>
+                                          <button type="submit" class="btn bg1">Delete</button>
+                                       </div>
+                                       </form>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+
                         </tr>
-                        <tr>
-                           <td>BSCPE</td>
-                           <td>Duis pulvinar facilisis tellus a luctus.</td>
-                           <td class="text-right">
-                              <a class="btn btn-sm bg3" href="#"><i class="fa fa-edit"></i> edit</a>
-                              <a class="btn btn-sm bg1" href="#" data-toggle="modal" data-target="#delete"><i
-                                    class="fa fa-trash-alt"></i> delete</a>
-                           </td>
-                        </tr>
-                        <tr>
-                           <td>BSCS</td>
-                           <td>Fusce gravida scelerisque maximus.</td>
-                           <td class="text-right">
-                              <a class="btn btn-sm bg3" href="#"><i class="fa fa-edit"></i> edit</a>
-                              <a class="btn btn-sm bg1" href="#" data-toggle="modal" data-target="#delete"><i
-                                    class="fa fa-trash-alt"></i> delete</a>
-                           </td>
-                        </tr>
-                        <tr>
-                           <td>BS NURSING</td>
-                           <td>Fusce gravida scelerisque maximus.</td>
-                           <td class="text-right">
-                              <a class="btn btn-sm bg3" href="#"><i class="fa fa-edit"></i> edit</a>
-                              <a class="btn btn-sm bg1" href="#" data-toggle="modal" data-target="#delete"><i
-                                    class="fa fa-trash-alt"></i> delete</a>
-                           </td>
-                        </tr>
-                        <tr>
-                           <td>BS MATH</td>
-                           <td>	Maecenas dapibus dignissim nunc, vitae hendrerit metus blandit vel.</td>
-                           <td class="text-right">
-                              <a class="btn btn-sm bg3" href="#"><i class="fa fa-edit"></i> edit</a>
-                              <a class="btn btn-sm bg1" href="#" data-toggle="modal" data-target="#delete"><i
-                                    class="fa fa-trash-alt"></i> delete</a>
-                           </td>
-                        </tr>
+
+
                         </tbody>
                   </table>
                </div>
@@ -254,29 +243,16 @@
    </div>
    <!-- /.content-wrapper -->
    </div>
-   <!-- ./wrapper -->
-   <div id="delete" class="modal animated rubberBand delete-modal" role="dialog">
-      <div class="modal-dialog modal-dialog-centered">
-         <div class="modal-content">
-            <div class="modal-body text-center">
-               <img src="img/sent.png" alt="" width="50" height="46">
-               <h3>Are you sure want to delete this Course?</h3>
-               <div class="m-t-20"> <a href="#" class="btn btn-white" data-dismiss="modal">Close</a>
-                  <button type="submit" class="btn bg1">Delete</button>
-               </div>
-            </div>
-         </div>
-      </div>
-   </div>
+
    <!-- jQuery -->
-   <script src="jquery/jquery.min.js"></script>
-   <script src="js/bootstrap.bundle.min.js"></script>
-   <script src="js/adminlte.js"></script>
+   <script src="/jquery/jquery.min.js"></script>
+   <script src="/js/bootstrap.bundle.min.js"></script>
+   <script src="/js/adminlte.js"></script>
    <!-- DataTables  & Plugins -->
-   <script src="ables/datatables/jquery.dataTables.min.js"></script>
-   <script src="tables/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-   <script src="tables/datatables-responsive/js/responsive.bootstrap4.min.js"></script>s
-   <script src="tables/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+   <script src="/ables/datatables/jquery.dataTables.min.js"></script>
+   <script src="/tables/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+   <script src="/tables/datatables-responsive/js/responsive.bootstrap4.min.js"></script>s
+   <script src="/tables/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
    <script>
       $(function () {
          $("#example1").DataTable();

@@ -1,8 +1,11 @@
 package by.nyurush.portal.controller;
 
+import by.nyurush.portal.dto.CourseDto;
 import by.nyurush.portal.dto.UserDto;
+import by.nyurush.portal.entity.Course;
 import by.nyurush.portal.entity.User;
 import by.nyurush.portal.entity.UserRole;
+import by.nyurush.portal.repository.CourseRepository;
 import by.nyurush.portal.service.UserService;
 import lombok.AllArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
@@ -21,13 +24,14 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-@Controller()
+@Controller
 @RequestMapping(value = "/admin")
 @AllArgsConstructor
 public class AdminController {
 
     private final UserService userService;
     private final ConversionService conversionService;
+    private final CourseRepository courseRepository;
 
     @GetMapping("/students")
     public String addStudent(Model model) {
@@ -48,7 +52,7 @@ public class AdminController {
         // todo check if user exist
         User user = conversionService.convert(userDto, User.class);
         user.setRole(UserRole.ROLE_STUDENT);
-        userService.saveUser(user);
+        userService.register(user);
 
         return "redirect:students";
     }
@@ -58,9 +62,24 @@ public class AdminController {
         // todo check if user exist
         User user = conversionService.convert(userDto, User.class);
         user.setRole(UserRole.ROLE_TEACHER);
-        userService.saveUser(user);
+        userService.register(user);
 
         return "redirect:teachers";
+    }
+
+    @GetMapping("/courses")
+    public String courses(Model model) {
+        model.addAttribute("course", new CourseDto());
+        model.addAttribute("courses", courseRepository.findAll());
+        return "admin/course";
+    }
+
+    @PostMapping("/course")
+    public String addTeacher(@ModelAttribute("course") CourseDto courseDto) {
+        Course course = conversionService.convert(courseDto, Course.class);
+        courseRepository.save(course);
+
+        return "redirect:courses";
     }
 
     @GetMapping("/user/image/{id}")
@@ -85,8 +104,15 @@ public class AdminController {
 
     @PostMapping("/user/delete/{id}")
     public String deleteUser(@PathVariable("id") String id) {
-        userService.deleteById(Long.getLong(id));
-        return "redirect:admin/students";
+//todo
+        //        userService.deleteById(Long.getLong(id));
+        return "redirect:students";
+    }
+
+    @PostMapping("/course/delete/{id}")
+    public String deleteCourse(@PathVariable("id") String id) {
+        courseRepository.deleteById(Long.getLong(id));
+        return "redirect:courses";
     }
 
 }
