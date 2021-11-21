@@ -26,4 +26,8 @@ public interface UserService {
 
     void updatePassword(String code, String newPassword);
 
+    void assignTeacher(Long userId, Long courseId);
+
+    void unassignTeacher(Long userId, Long courseId);
+
 }

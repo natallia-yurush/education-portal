@@ -1,11 +1,13 @@
 package by.nyurush.portal.service.impl;
 
+import by.nyurush.portal.entity.Course;
 import by.nyurush.portal.entity.User;
 import by.nyurush.portal.entity.UserRole;
 import by.nyurush.portal.exception.RedisCodeNotFoundException;
 import by.nyurush.portal.exception.user.UserAlreadyExistException;
 import by.nyurush.portal.exception.user.UserAlreadyIsActiveException;
 import by.nyurush.portal.exception.user.UserNotFoundException;
+import by.nyurush.portal.repository.CourseRepository;
 import by.nyurush.portal.repository.UserRepository;
 import by.nyurush.portal.service.MailService;
 import by.nyurush.portal.service.RedisService;
@@ -25,6 +27,7 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final CourseRepository courseRepository;
     private final PasswordEncoder passwordEncoder;
     private final RedisService redisService;
     private final MailService mailService;
@@ -44,9 +47,10 @@ public class UserServiceImpl implements UserService {
         user.setActive(false);
         User registeredUser = userRepository.save(user);
 
-        String activationCode = generateCode();
-        redisService.addCode(activationCode, user.getEmail());
-        mailService.sendConfirmationEmail(user.getEmail(), activationCode);
+        //todo
+//        String activationCode = generateCode();
+//        redisService.addCode(activationCode, user.getEmail());
+//        mailService.sendConfirmationEmail(user.getEmail(), activationCode);
 
         log.info("IN register - user: {} successfully registered", registeredUser);
         return registeredUser;
@@ -100,6 +104,24 @@ public class UserServiceImpl implements UserService {
             log.warn("IN updatePassword - there is no code in redis {}", code);
             throw new RedisCodeNotFoundException();
         }
+    }
+
+    @Override
+    public void assignTeacher(Long userId, Long courseId) {
+        Course course = courseRepository.findById(courseId).orElseThrow(); //todo
+        User user = userRepository.findById(userId).orElseThrow();
+
+        user.getCourseList().add(course);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void unassignTeacher(Long userId, Long courseId) {
+        Course course = courseRepository.findById(courseId).orElseThrow(); //todo
+        User user = userRepository.findById(userId).orElseThrow();
+
+        user.getCourseList().remove(course);
+        userRepository.save(user);
     }
 
     @Override

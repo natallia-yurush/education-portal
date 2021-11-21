@@ -1,5 +1,6 @@
 package by.nyurush.portal.controller;
 
+import by.nyurush.portal.dto.AssignTeacherDto;
 import by.nyurush.portal.dto.CourseDto;
 import by.nyurush.portal.dto.UserDto;
 import by.nyurush.portal.entity.Course;
@@ -8,8 +9,8 @@ import by.nyurush.portal.entity.UserRole;
 import by.nyurush.portal.repository.CourseRepository;
 import by.nyurush.portal.service.UserService;
 import lombok.AllArgsConstructor;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,9 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.Base64;
 
 @Controller
 @RequestMapping(value = "/admin")
@@ -33,10 +33,25 @@ public class AdminController {
     private final ConversionService conversionService;
     private final CourseRepository courseRepository;
 
-    @GetMapping("/students")
+    @GetMapping("/index")
+    public String getIndex(Model model) {
+//        model.addAttribute("user", new UserDto());
+//        model.addAttribute("students", userService.findAllStudents());
+        return "admin/index";
+    }
+
+    @GetMapping(value = "/students", produces = MediaType.IMAGE_JPEG_VALUE)
     public String addStudent(Model model) {
         model.addAttribute("user", new UserDto());
+//        List<User> userList = userService.findAllStudents();
         model.addAttribute("students", userService.findAllStudents());
+        model.addAttribute("imgUtil", new ImageUtil());
+//        for (User user : userList) {
+//            if (user.getPhoto() != null) {
+//                String base64 = Base64.getMimeEncoder().encodeToString(user.getPhoto());
+//                model.addAttribute("avatar" + user.getId(), base64);
+//            }
+//        }
         return "admin/student";
     }
 
@@ -82,15 +97,32 @@ public class AdminController {
         return "redirect:courses";
     }
 
+    @GetMapping("/assign-teacher")
+    public String assignTeacher(Model model) {
+        model.addAttribute("assignTeacher", new AssignTeacherDto());
+        model.addAttribute("courses", courseRepository.findAll());
+        return "admin/assign-teacher";
+    }
+
+    @PostMapping("/assign-teacher")
+    public String assignTeacher(@ModelAttribute("assignTeacher") AssignTeacherDto assignTeacherDto) {
+        userService.assignTeacher(assignTeacherDto.getUserId(), assignTeacherDto.getCourseId());
+        return "redirect:assign-teacher";
+    }
+
     @GetMapping("/user/image/{id}")
-    public void showProductImage(@PathVariable String id,
-                                 HttpServletResponse response) throws IOException {
-        response.setContentType("image/jpeg"); // Or whatever format you wanna use
+    public void showProductImage(@PathVariable Long id, Model model) throws IOException {
 
-        User user = userService.findById(Long.getLong(id));
+        User user = userService.findById(id);
+        String base64 = Base64.getMimeEncoder().encodeToString(user.getPhoto());
+        model.addAttribute("avatar" + id, base64);
 
-        InputStream is = new ByteArrayInputStream(user.getPhoto());
-        IOUtils.copy(is, response.getOutputStream());
+//        response.setContentType("image/jpeg"); // Or whatever format you wanna use
+//
+//        User user = userService.findById(id);
+//
+//        InputStream is = new ByteArrayInputStream(user.getPhoto());
+//        IOUtils.copy(is, response.getOutputStream());
     }
 
     @GetMapping("/image/display/{id}")
@@ -104,15 +136,32 @@ public class AdminController {
 
     @PostMapping("/user/delete/{id}")
     public String deleteUser(@PathVariable("id") String id) {
-//todo
-        //        userService.deleteById(Long.getLong(id));
+        //todo
+        //userService.deleteById(Long.getLong(id));
         return "redirect:students";
     }
 
     @PostMapping("/course/delete/{id}")
-    public String deleteCourse(@PathVariable("id") String id) {
-        courseRepository.deleteById(Long.getLong(id));
+    public String deleteCourse(@PathVariable("id") Long id) {
+        courseRepository.deleteById(id);
         return "redirect:courses";
     }
 
+    @PostMapping("/unassign/{userId}/{courseId}")
+    public String unassignTeacher(@PathVariable("userId") Long userId,
+                                  @PathVariable("courseId") Long courseId) {
+        userService.unassignTeacher(userId, courseId);
+        return "redirect:/admin/assign-teacher";
+    }
+
+}
+
+class ImageUtil {
+
+    public String getImgData(byte[] byteData) {
+        if(byteData != null) {
+            return Base64.getMimeEncoder().encodeToString(byteData);
+        }
+        return null;
+    }
 }

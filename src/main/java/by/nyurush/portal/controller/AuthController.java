@@ -3,12 +3,12 @@ package by.nyurush.portal.controller;
 import by.nyurush.portal.dto.AuthorizationDto;
 import by.nyurush.portal.dto.ResetRequestDto;
 import by.nyurush.portal.entity.User;
+import by.nyurush.portal.entity.UserRole;
 import by.nyurush.portal.exception.user.UserAlreadyIsActiveException;
 import by.nyurush.portal.security.jwt.JwtTokenProvider;
 import by.nyurush.portal.service.RedisService;
 import by.nyurush.portal.service.impl.UserServiceImpl;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,7 +69,15 @@ public class AuthController {
             response.put("email", email);
             response.put("token", token);
 
-            return "admin/index";
+            if (user.getRole() == UserRole.ROLE_ADMIN) {
+                return "admin/index";
+            } else if (user.getRole() == UserRole.ROLE_STUDENT) {
+                return "student/index";
+            } else if (user.getRole() == UserRole.ROLE_TEACHER) {
+                return "teacher/index";
+            } else {
+                return "index";
+            }
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username or password");
         }

@@ -11,8 +11,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import java.util.List;
 
 @Table(name = "course", schema = "public")
 @NoArgsConstructor
@@ -33,4 +34,7 @@ public class Course {
 
     @Column(name = "description")
     private String description;
+
+    @ManyToMany(mappedBy = "courseList")
+    private List<User> userList;
 }
