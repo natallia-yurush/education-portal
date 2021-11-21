@@ -48,9 +48,9 @@ public class UserServiceImpl implements UserService {
         User registeredUser = userRepository.save(user);
 
         //todo
-//        String activationCode = generateCode();
-//        redisService.addCode(activationCode, user.getEmail());
-//        mailService.sendConfirmationEmail(user.getEmail(), activationCode);
+        String activationCode = generateCode();
+        redisService.addCode(activationCode, user.getEmail());
+        mailService.sendConfirmationEmail(user.getEmail(), activationCode);
 
         log.info("IN register - user: {} successfully registered", registeredUser);
         return registeredUser;

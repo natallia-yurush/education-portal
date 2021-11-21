@@ -64,7 +64,6 @@ public class AdminController {
 
     @PostMapping("/student")
     public String addStudent(@ModelAttribute("user") UserDto userDto) {
-        // todo check if user exist
         User user = conversionService.convert(userDto, User.class);
         user.setRole(UserRole.ROLE_STUDENT);
         userService.register(user);
@@ -74,7 +73,6 @@ public class AdminController {
 
     @PostMapping("/teacher")
     public String addTeacher(@ModelAttribute("user") UserDto userDto) {
-        // todo check if user exist
         User user = conversionService.convert(userDto, User.class);
         user.setRole(UserRole.ROLE_TEACHER);
         userService.register(user);

@@ -17,7 +17,7 @@
          <!-- /.login-logo -->
          <div class="card card-outline card-success">
             <div class="card-header text-center">
-               <a href="index.html" class="brand-link">
+               <a th:href="@{/index}" class="brand-link">
                   <img src="/img/login.png" alt="DSMS Logo" width="200">
                </a>
             </div>
@@ -46,6 +46,7 @@
                      </div>
                   </div>
                </form>
+               <a th:href="@{/forgot_password}" class="brand-link">Forgot password</a>
             </div>
             <!-- /.card-body -->
          </div>

@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,7 +44,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @GetMapping
+    @GetMapping("/")
     public String getHomePage(Model model) {
         model.addAttribute("authInfo", new AuthorizationDto());
         return "index";
@@ -83,29 +85,36 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/confirm/{hash_code}")
-    public void confirmUser(@PathVariable("hash_code") String hashCode) {
+    @GetMapping("/auth/confirm/{hash_code}")
+    public String confirmUser(@PathVariable("hash_code") String hashCode) {
         userService.confirmUser(hashCode);
+        return "index";
+    }
+
+    @GetMapping("/forgot_password")
+    public String forgotPassword() {
+        return "forgot-password";
     }
 
     @PostMapping("/forgot_password")
-    public ResponseEntity<?> forgotPassword(@RequestBody String email) {
+    public String forgotPassword(@RequestParam String email,
+                                 HttpServletResponse response) {
         userService.resetPassword(email);
-        return new ResponseEntity<>(HttpStatus.OK);
+        //todo return page with message that everything is alright and that is needed to check email
+        return "reset-password";
     }
 
-    @PostMapping("/reset")
-    public void resetPassword(@RequestBody ResetRequestDto requestDto) {
-        userService.updatePassword(requestDto.getCode(), requestDto.getPassword());
+    @GetMapping("/reset_password/{code}")
+    public String resetPassword(@PathVariable String code, Model model) {
+        model.addAttribute("code", code);
+        return "reset-password";
     }
 
-    @GetMapping("/check_code")
-    public ResponseEntity<?> checkCode(@RequestParam("code") String code) {
-        if (redisService.isCodeExist(code)) {
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    @PostMapping("/reset_password/{code}")
+    public String resetPassword(@PathVariable String code,
+                                @RequestParam String newPassword) {
+        userService.updatePassword(code, newPassword);
+        return "redirect:http://localhost:8080";
     }
 
 }

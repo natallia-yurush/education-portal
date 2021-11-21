@@ -56,22 +56,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/",
-                "/fontawesome/**",
-                "/css/**",
-                "/img/**",
-                "/jquery/**",
-                "/js/**",
-                "/tables/**",
-                "/login",
-
-                "/auth/registration/**",
-                "/auth/confirm/**",
-                "/auth/forgot_password/**",
-                "/auth/reset/**",
-                "/auth/check_code",
-                "/articles"
-        );
+//        web.ignoring().antMatchers("/",
+//                "/fontawesome/**",
+//                "/css/**",
+//                "/img/**",
+//                "/jquery/**",
+//                "/js/**",
+//                "/tables/**",
+//                "/login",
+//
+//                "/auth/registration/**",
+//                "/auth/confirm/**",
+//                "/auth/forgot_password/**",
+//                "/auth/reset/**",
+//                "/auth/check_code",
+//                "/articles"
+//        );
 
     }
 }

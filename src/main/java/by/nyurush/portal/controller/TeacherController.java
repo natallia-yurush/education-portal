@@ -1,6 +1,8 @@
 package by.nyurush.portal.controller;
 
+import by.nyurush.portal.dto.AnswerDto;
 import by.nyurush.portal.dto.ExamDto;
+import by.nyurush.portal.dto.TestItemDto;
 import by.nyurush.portal.entity.Exam;
 import by.nyurush.portal.repository.ExamRepository;
 import lombok.AllArgsConstructor;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,6 +55,21 @@ public class TeacherController {
     public String deleteExam(@PathVariable Long id) {
         examRepository.deleteById(id);
         return "redirect:exams";
+    }
+
+    @GetMapping("/question")
+    public String qetQuestions(Model model) {
+        model.addAttribute("question", new TestItemDto());
+        model.addAttribute("answer", new AnswerDto());
+        model.addAttribute("answers", new ArrayList<AnswerDto>());
+
+        return "teacher/question";
+    }
+
+    @PostMapping("/question")
+    public String addQuestion() {
+
+        return null;
     }
 
 }
