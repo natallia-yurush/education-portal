@@ -1,12 +1,16 @@
 package by.nyurush.portal.controller;
 
 import by.nyurush.portal.dto.AnswerDto;
+import by.nyurush.portal.dto.AssignExamDto;
 import by.nyurush.portal.dto.ExamDto;
 import by.nyurush.portal.dto.TestItemDto;
 import by.nyurush.portal.entity.Exam;
 import by.nyurush.portal.entity.Question;
+import by.nyurush.portal.entity.User;
 import by.nyurush.portal.repository.ExamRepository;
 import by.nyurush.portal.repository.QuestionRepository;
+import by.nyurush.portal.repository.UserRepository;
+import by.nyurush.portal.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Controller;
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +36,8 @@ public class TeacherController {
 
     private final ExamRepository examRepository;
     private final QuestionRepository questionRepository;
+    private final UserRepository userRepository;
+    private final UserService userService;
     private final ConversionService conversionService;
 
     @GetMapping("/index")
@@ -99,5 +106,39 @@ public class TeacherController {
         return "redirect:question";
     }
 
+    @PostMapping("/question/edit/{id}")
+    public String editQuestion(@PathVariable Long id, Model model) {
+        TestItemDto testItemDto = new TestItemDto();
+        testItemDto.setAnswers(new ArrayList<>());
+        Question question = questionRepository.findById(id).orElseThrow();
+        question.getAnswerList().forEach(answer -> testItemDto.getAnswers().add(new AnswerDto()));
+        model.addAttribute("itemToEdit", testItemDto);
+
+        return "redirect:question";
+    }
+
+    @GetMapping("/assign-exam")
+    public String assignExam(Model model) {
+        List<Exam> examList = examRepository.findByUserListIsNotNull();
+        model.addAttribute("exams", examList);
+        model.addAttribute("assignExam", new AssignExamDto());
+        return "teacher/assign-exam";
+    }
+
+    @PostMapping("/assign-exam")
+    public String assignExam(@ModelAttribute("exam") AssignExamDto assignExamDto) {
+        Exam exam = examRepository.findById(assignExamDto.getExamId()).orElseThrow();
+        User user = userRepository.findById(assignExamDto.getUserId()).orElseThrow();
+        user.getExamList().add(exam);
+        userRepository.save(user);
+        return "redirect:assign-exam";
+    }
+
+    @PostMapping("/unassign/{userId}/{courseId}")
+    public String unassignExam(@PathVariable("userId") Long userId,
+                                  @PathVariable("examId") Long examId) {
+        userService.unassignExam(userId, examId);
+        return "redirect:/teacher/assign-exam";
+    }
 
 }

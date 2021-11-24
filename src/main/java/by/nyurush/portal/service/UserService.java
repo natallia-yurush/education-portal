@@ -30,4 +30,6 @@ public interface UserService {
 
     void unassignTeacher(Long userId, Long courseId);
 
+    void unassignExam(Long userId, Long examId);
+
 }

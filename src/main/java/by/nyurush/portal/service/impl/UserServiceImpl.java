@@ -1,6 +1,7 @@
 package by.nyurush.portal.service.impl;
 
 import by.nyurush.portal.entity.Course;
+import by.nyurush.portal.entity.Exam;
 import by.nyurush.portal.entity.User;
 import by.nyurush.portal.entity.UserRole;
 import by.nyurush.portal.exception.RedisCodeNotFoundException;
@@ -8,6 +9,7 @@ import by.nyurush.portal.exception.user.UserAlreadyExistException;
 import by.nyurush.portal.exception.user.UserAlreadyIsActiveException;
 import by.nyurush.portal.exception.user.UserNotFoundException;
 import by.nyurush.portal.repository.CourseRepository;
+import by.nyurush.portal.repository.ExamRepository;
 import by.nyurush.portal.repository.UserRepository;
 import by.nyurush.portal.service.MailService;
 import by.nyurush.portal.service.RedisService;
@@ -28,6 +30,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;
+    private final ExamRepository examRepository;
     private final PasswordEncoder passwordEncoder;
     private final RedisService redisService;
     private final MailService mailService;
@@ -120,6 +123,15 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId).orElseThrow();
 
         user.getCourseList().remove(course);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void unassignExam(Long userId, Long examId) {
+        Exam exam = examRepository.findById(examId).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow();
+
+        user.getExamList().remove(exam);
         userRepository.save(user);
     }
 

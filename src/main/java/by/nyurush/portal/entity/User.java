@@ -64,4 +64,12 @@ public class User {
             inverseJoinColumns = {@JoinColumn(name = "course_id")}
     )
     private List<Course> courseList;
+
+    @ManyToMany(cascade = {CascadeType.ALL})
+    @JoinTable(
+            name = "user_exam",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "exam_id")}
+    )
+    private List<Exam> examList;
 }
