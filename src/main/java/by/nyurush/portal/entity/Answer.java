@@ -11,9 +11,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import java.util.List;
 
 @Table(name = "answer", schema = "public")
 @NoArgsConstructor
@@ -32,10 +32,9 @@ public class Answer {
     @Column(name = "text")
     private String text;
 
-    @Column(name = "correct")
-    private boolean correct;
+    @ManyToMany(mappedBy = "answerList")
+    private List<Question> questionList;
 
-    @ManyToOne
-    @JoinColumn(name = "question_id")
-    private Question question;
+    @ManyToMany(mappedBy = "correctAnswerList")
+    private List<Question> questionsToCorrectAnswers;
 }

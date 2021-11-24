@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Exam Management System</title>
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="fontawesome/css/all.min.css">
-    <link rel="stylesheet" href="css/adminlte.min.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="tables/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="/css/adminlte.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/tables/datatables-bs4/css/dataTables.bootstrap4.min.css">
     <style type="text/css">
         td a.btn {
             font-size: 0.7rem;
@@ -40,6 +40,19 @@
         .bg3 {
             background-color: rgb(4, 91, 98);
             color: rgb(211, 209, 207);
+        }
+
+        .link {
+            background: none !important;
+            border: none;
+            padding: 0 !important;
+            /*optional*/
+            font-family: arial, sans-serif;
+            /*input has OS specific font-family*/
+            color: #069;
+            text-decoration: underline;
+            cursor: pointer;
+            float: left;
         }
     </style>
 </head>
@@ -73,7 +86,7 @@
     <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: rgba(39,93,43);">
         <!-- Brand Logo -->
         <a href="index.html" class="brand-link animated swing">
-            <img src="img/logo.png" alt="DSMS Logo" width="200" style="margin-bottom: -50px;">
+            <img src="/img/logo.png" alt="DSMS Logo" width="200" style="margin-bottom: -50px;">
         </a>
         <!-- Sidebar -->
         <div class="sidebar">
@@ -82,7 +95,7 @@
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                     data-accordion="false">
                     <li class="nav-item">
-                        <a href="index.html" class="nav-link">
+                        <a th:href="@{/teacher/index}" class="nav-link">
                             <i class="nav-icon fa fa-tachometer-alt"></i>
                             <p>
                                 Dashboard
@@ -90,7 +103,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="exam.html" class="nav-link">
+                        <a th:href="@{/teacher/exams}" class="nav-link">
                             <i class="nav-icon fa fa-file-signature"></i>
                             <p>
                                 Exam
@@ -98,7 +111,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a class="nav-link"> <!--todo-->
                             <i class="nav-icon far fa-file-word"></i>
                             <p>
                                 Online Exam
@@ -107,7 +120,7 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="question.html" class="nav-link">
+                                <a th:href="@{/teacher/question}" class="nav-link">
                                     <i class="nav-icon fa fa-book"></i>
                                     <p>Question Bank</p>
                                 </a>
@@ -160,7 +173,7 @@
                     <!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/teacher/index}">Home</a></li>
                             <li class="breadcrumb-item active">Exams</li>
                         </ol>
                     </div>
@@ -176,8 +189,8 @@
             <div class="container-fluid">
                 <div class="card card-info">
                     <div class="card-body">
-                        <a class="btn btn-sm bg1" href="#" data-toggle="modal" data-target="#delete"><i
-                                class="fa fa-plus"></i> Add Question</a><br><br>
+                        <a class="btn btn-sm bg1" data-toggle="modal" data-target="#add"><i
+                                class="fa fa-user-plus"></i> Add Question</a><br><br>
                         <div class="col-md-12 table-responsive">
                             <table class="table align-items-center mb-0">
                                 <thead>
@@ -188,22 +201,10 @@
                                         Questions
                                     </th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Choice1
+                                        All Answers
                                     </th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Choice2
-                                    </th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Choice3
-                                    </th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Choice4
-                                    </th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Answers
-                                    </th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Points
+                                        Correct Answers
                                     </th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                         Action
@@ -212,130 +213,140 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
+                                <tr th:each="question, stat: ${questions}">
                                     <td>
                                         <div class="d-flex px-2 py-1">
                                             <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="text-xs text-secondary mb-0">1</h6>
+                                                <h6 class="text-xs text-secondary mb-0"><span
+                                                        th:text="__${stat.index + 1}__"></span></h6>
                                             </div>
                                         </div>
                                     </td>
-                                    <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, <br>sed do eiusmod
-                                        tempor incididunt ut labore et dolore magna aliqua.
-                                    </td>
-                                    <td>Choice 1</td>
-                                    <td>Choice 2</td>
-                                    <td>Choice 3</td>
-                                    <td>Choice 4</td>
-                                    <td><span class="badge bg-success">Choice 2</span></td>
-                                    <td>2 pts</td>
-                                    <td class="text-right">
-                                        <a class="btn btn-sm bg3" href="#"><i class="fa fa-edit"></i> edit</a>
-                                        <a class="btn btn-sm bg1" href="#" data-toggle="modal" data-target="#delete"><i
-                                                class="fa fa-trash-alt"></i> delete</a>
-                                    </td>
-                                </tr>
-                                <tr>
+                                    <td th:text="${question.text}"/>
+
                                     <td>
-                                        <div class="d-flex px-2 py-1">
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="text-xs text-secondary mb-0">2</h6>
-                                            </div>
+                                        <div th:each="answer, itemStat: ${question.answerList}">
+                                            <span th:text="__${itemStat.index + 1}__"/>
+                                            <span th:text="${question.answerList[__${itemStat.index}__].text}"></span>
+                                            <br>
                                         </div>
-                                    </td>
-                                    <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, <br>sed do eiusmod
-                                        tempor incididunt ut labore et dolore magna aliqua.
                                     </td>
 
-                                    <td>Choice 1</td>
-                                    <td>Choice 2</td>
-                                    <td>Choice 3</td>
-                                    <td>Choice 4</td>
-                                    <td><span class="badge bg-success">Choice 4</span></td>
-                                    <td>2 pts</td>
-                                    <td class="text-right">
-                                        <a class="btn btn-sm bg3" href="#"><i class="fa fa-edit"></i> edit</a>
-                                        <a class="btn btn-sm bg1" href="#" data-toggle="modal" data-target="#delete"><i
-                                                class="fa fa-trash-alt"></i> delete</a>
-                                    </td>
-                                </tr>
-                                <tr>
                                     <td>
-                                        <div class="d-flex px-2 py-1">
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="text-xs text-secondary mb-0">3</h6>
-                                            </div>
+                                        <div th:each="answer, itemStat: ${question.correctAnswerList}">
+                                            <span th:text="${question.correctAnswerList[__${itemStat.index}__].text}"></span>
+                                            <br>
                                         </div>
-                                    </td>
-                                    <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, <br>sed do eiusmod
-                                        tempor incididunt ut labore et dolore magna aliqua.
                                     </td>
 
-                                    <td>Choice 1</td>
-                                    <td>Choice 2</td>
-                                    <td>Choice 3</td>
-                                    <td>Choice 4</td>
-                                    <td><span class="badge bg-success">Choice 3</span></td>
-                                    <td>2 pts</td>
                                     <td class="text-right">
                                         <a class="btn btn-sm bg3" href="#"><i class="fa fa-edit"></i> edit</a>
-                                        <a class="btn btn-sm bg1" href="#" data-toggle="modal" data-target="#delete"><i
+                                        <a class="btn btn-sm bg1" data-toggle="modal" data-target="#delete"><i
                                                 class="fa fa-trash-alt"></i> delete</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex px-2 py-1">
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="text-xs text-secondary mb-0">4</h6>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, <br>sed do eiusmod
-                                        tempor incididunt ut labore et dolore magna aliqua.
                                     </td>
 
-                                    <td>Choice 1</td>
-                                    <td>Choice 2</td>
-                                    <td>Choice 3</td>
-                                    <td>Choice 4</td>
-                                    <td><span class="badge bg-success">Choice 2</span></td>
-                                    <td>2 pts</td>
-                                    <td class="text-right">
-                                        <a class="btn btn-sm bg3" href="#"><i class="fa fa-edit"></i> edit</a>
-                                        <a class="btn btn-sm bg1" href="#" data-toggle="modal" data-target="#delete"><i
-                                                class="fa fa-trash-alt"></i> delete</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex px-2 py-1">
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="text-xs text-secondary mb-0">5</h6>
+                                    <div id="delete" class="modal animated rubberBand delete-modal" role="dialog">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-body text-center">
+                                                    <img src="/img/sent.png" alt="" width="50" height="46">
+                                                    <h3>Are you sure want to delete this Questionaire?</h3>
+                                                    <form action="#" th:action="@{${'question/delete/'+ question.id}}"
+                                                          th:method="post">
+                                                        <div class="m-t-20"><a class="btn btn-white"
+                                                                               data-dismiss="modal">Close</a>
+                                                            <button type="submit" class="btn bg1">Delete</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
                                             </div>
                                         </div>
-                                    </td>
-                                    <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, <br>sed do eiusmod
-                                        tempor incididunt ut labore et dolore magna aliqua.
-                                    </td>
-                                    <td>Choice 1</td>
-                                    <td>Choice 2</td>
-                                    <td>Choice 3</td>
-                                    <td>Choice 4</td>
-                                    <td><span class="badge bg-success">Choice 1</span></td>
-                                    <td>2 pts</td>
-                                    <td class="text-right">
-                                        <a class="btn btn-sm bg3" href="#"><i class="fa fa-edit"></i> edit</a>
-                                        <a class="btn btn-sm bg1" href="#" data-toggle="modal" data-target="#delete"><i
-                                                class="fa fa-trash-alt"></i> delete</a>
-                                    </td>
+                                    </div>
+
+<!--                                    <div id="edit" class="modal animated rubberBand delete-modal" role="dialog">-->
+<!--                                        <div class="modal-dialog modal-dialog-centered modal-lg">-->
+<!--                                            <div class="modal-content">-->
+<!--                                                <div class="modal-body text-center">-->
+
+<!--                                                    <form action="#" th:action="@{/teacher/question}" th:object="${testItem}"-->
+<!--                                                          method="post">-->
+
+<!--                                                        <input class="form-control"-->
+<!--                                                               type="hidden"-->
+<!--                                                               th:value="${question.id}" id="id" name="id"/>-->
+<!--                                                        -->
+<!--                                                        <div class="col-md-12">-->
+<!--                                                            <div class="form-group">-->
+<!--                                                                <label for="examId" class="float-left">Exam Id</label>-->
+<!--                                                                <input id="examId" type="text" class="form-control" placeholder="exam id"-->
+<!--                                                                       th:field="${testItem.examId}">-->
+<!--                                                            </div>-->
+<!--                                                        </div>-->
+
+<!--                                                        <div class="col-md-12">-->
+<!--                                                            <div class="form-group">-->
+<!--                                                                <label for="questionText" class="float-left">Question Text</label>-->
+<!--                                                                <input id="questionText" type="text" class="form-control"-->
+<!--                                                                       placeholder="Question Text" th:field="${testItem.questionText}">-->
+<!--                                                            </div>-->
+<!--                                                        </div>-->
+<!--                                                        <fieldset id="answers">-->
+<!--                                                            <table>-->
+<!--                                                                <thead>-->
+<!--                                                                <tr>-->
+<!--                                                                    <th><label for="examId" class="float-left">Answer options</label></th>-->
+<!--                                                                </tr>-->
+<!--                                                                </thead>-->
+<!--                                                                <tbody>-->
+<!--                                                                <tr th:each="answer, itemStat : ${testItem.answers}">-->
+<!--                                                                    <td>-->
+<!--                                                                        <div class="col-md-12">-->
+<!--                                                                            <div class="form-group">-->
+<!--                                                                                <input class="form-control"-->
+<!--                                                                                       th:field="${testItem.answers[__${itemStat.index}__].text}"/>-->
+<!--                                                                            </div>-->
+<!--                                                                        </div>-->
+<!--                                                                    </td>-->
+<!--                                                                    <td>-->
+<!--                                                                        <div class="col-md-12">-->
+<!--                                                                            <div class="form-group">-->
+<!--                                                                                <input type="checkbox"-->
+<!--                                                                                       th:field="${testItem.answers[__${itemStat.index}__].correct}">-->
+<!--                                                                            </div>-->
+<!--                                                                        </div>-->
+<!--                                                                    </td>-->
+
+<!--                                                                </tr>-->
+
+<!--                                                                </tbody>-->
+<!--                                                            </table>-->
+
+<!--                                                        </fieldset>-->
+
+<!--                                                        <button type="button" class="link" name="addItem">Add item</button>-->
+
+<!--                                                        <div class="card-footer">-->
+<!--                                                            <button type="submit" class="btn bg2">Save</button>-->
+<!--                                                        </div>-->
+
+<!--                                                    </form>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+
                                 </tr>
+
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <div>
+            </div>
+
 
     </div>
     <!-- /.card-body -->
@@ -348,83 +359,70 @@
 <!-- /.content-wrapper -->
 </div>
 <!-- ./wrapper -->
-<div id="delete" class="modal animated rubberBand delete-modal" role="dialog">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-body text-center">
-                <img src="img/sent.png" alt="" width="50" height="46">
-                <h3>Are you sure want to delete this Questionaire?</h3>
-                <div class="m-t-20"><a href="#" class="btn btn-white" data-dismiss="modal">Close</a>
-                    <button type="submit" class="btn bg1">Delete</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 
 <div id="add" class="modal animated rubberBand delete-modal" role="dialog">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-body text-center">
-                <form th:method="post" th:action="@{/teacher/question}" >
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-12 float-left">
-                                <div class="float-left">
-                                    <span class="fa fa-question">Question</span>
-                                </div>
-                            </div>
 
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="examName" class="float-left">Exam Name</label>
-                                    <input id="examName" type="text" class="form-control" placeholder="exam name">
-                                </div>
-                            </div>
+                <form action="#" th:action="@{/teacher/question}" th:object="${testItem}"
+                      method="post">
 
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="examInstruction" class="float-left">Instruction</label>
-                                    <input id="examInstruction" type="email" class="form-control"
-                                           placeholder="Instruction" th:field="*{instruction}">
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="examStartDate" class="float-left">Start Date</label>
-                                    <input type="date" id="examStartDate" class="form-control" placeholder="Start Date"
-                                           th:field="*{startDate}">
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="examEndDate" class="float-left">End Date</label>
-                                    <input type="date" id="examEndDate" class="form-control" placeholder="End Date"
-                                           th:field="*{endDate}">
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="examTimerInMinutes" class="float-left">Timer in Minutes</label>
-                                    <input id="examTimerInMinutes" type="text" class="form-control"
-                                           placeholder="Timer in Minutes"
-                                           th:field="*{timerInMinutes}">
-                                </div>
-                            </div>
-
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="examId" class="float-left">Exam Id</label>
+                            <input id="examId" type="text" class="form-control" placeholder="exam id"
+                                   th:field="${testItem.examId}">
                         </div>
-
                     </div>
-                    <!-- /.card-body -->
+
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="questionText" class="float-left">Question Text</label>
+                            <input id="questionText" type="text" class="form-control"
+                                   placeholder="Question Text" th:field="${testItem.questionText}">
+                        </div>
+                    </div>
+                    <fieldset id="answers">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th><label for="examId" class="float-left">Answer options</label></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="answer, itemStat : ${testItem.answers}">
+                                <td>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <input class="form-control"
+                                                   th:field="${testItem.answers[__${itemStat.index}__].text}"/>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <input type="checkbox"
+                                                   th:field="${testItem.answers[__${itemStat.index}__].correct}">
+                                        </div>
+                                    </div>
+                                </td>
+
+                            </tr>
+
+                            </tbody>
+                        </table>
+
+                    </fieldset>
+
+                    <button type="button" class="link" name="addItem">Add item</button>
 
                     <div class="card-footer">
                         <button type="submit" class="btn bg2">Save</button>
-                        <div class="m-t-20"><a class="btn btn-white" data-dismiss="modal">Cancel</a></div>
                     </div>
+
                 </form>
             </div>
         </div>
@@ -432,20 +430,41 @@
 </div>
 
 <!-- jQuery -->
-<script src="jquery/jquery.min.js"></script>
-<script src="js/bootstrap.bundle.min.js"></script>
-<script src="js/adminlte.js"></script>
+<script src="/jquery/jquery.min.js"></script>
+<script src="/js/bootstrap.bundle.min.js"></script>
+<script src="/js/adminlte.js"></script>
 <!-- DataTables  & Plugins -->
-<script src="tables/datatables/jquery.dataTables.min.js"></script>
-<script src="tables/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-<script src="tables/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-s
-<script src="tables/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="/tables/datatables/jquery.dataTables.min.js"></script>
+<script src="/tables/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="/tables/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="/tables/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
 <script>
     $(function () {
         $("#example1").DataTable();
     });
 </script>
+
+<script>
+    // jQuery
+    function replaceItems(html) {
+        $('#answers').replaceWith($(html));
+    }
+
+    $('button[name="addItem"]').click(function (event) {
+        event.preventDefault();
+        var data = $('form').serialize();
+        $.post('/teacher/addItem', data, replaceItems);
+    });
+
+    $('button[name="removeItem"]').click(function (event) {
+        event.preventDefault();
+        var data = $('form').serialize();
+        // Add parameter and index of item that is going to be removed.
+        data += 'removeItem=' + $(this).val();
+        $.post('/question', data, replaceItems);
+    });
+</script>
+
 </body>
 
 </html>

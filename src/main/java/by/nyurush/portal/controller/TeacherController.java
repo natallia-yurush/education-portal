@@ -4,7 +4,9 @@ import by.nyurush.portal.dto.AnswerDto;
 import by.nyurush.portal.dto.ExamDto;
 import by.nyurush.portal.dto.TestItemDto;
 import by.nyurush.portal.entity.Exam;
+import by.nyurush.portal.entity.Question;
 import by.nyurush.portal.repository.ExamRepository;
+import by.nyurush.portal.repository.QuestionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Controller;
@@ -15,7 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.ArrayList;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,7 +26,11 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class TeacherController {
 
-    private ExamRepository examRepository;
+    private static final String AJAX_HEADER_NAME = "X-Requested-With";
+    private static final String AJAX_HEADER_VALUE = "XMLHttpRequest";
+
+    private final ExamRepository examRepository;
+    private final QuestionRepository questionRepository;
     private final ConversionService conversionService;
 
     @GetMapping("/index")
@@ -57,19 +63,41 @@ public class TeacherController {
         return "redirect:exams";
     }
 
-    @GetMapping("/question")
-    public String qetQuestions(Model model) {
-        model.addAttribute("question", new TestItemDto());
-        model.addAttribute("answer", new AnswerDto());
-        model.addAttribute("answers", new ArrayList<AnswerDto>());
-
+    @GetMapping(path = {"/question", "/question/{id}"})
+    public String showOrder(@PathVariable(required = false) Long id, Model model) {
+        List<Question> questionList = questionRepository.findAll();
+        model.addAttribute("questions", questionList);
+        TestItemDto testItemDto = new TestItemDto();
+        testItemDto.setAnswers(List.of(
+                new AnswerDto("", false),
+                new AnswerDto("", false)));
+        model.addAttribute("testItem", testItemDto);
         return "teacher/question";
     }
 
-    @PostMapping("/question")
-    public String addQuestion() {
-
-        return null;
+    @PostMapping(path = {"/question", "/question/{id}"})
+    public String saveOrder(@ModelAttribute TestItemDto testItemDto) {
+        Question question = conversionService.convert(testItemDto, Question.class);
+        questionRepository.save(question);
+        return "redirect:question";
     }
+
+    @PostMapping(path = {"/addItem"})
+    public String addOrder(TestItemDto testItemDto, HttpServletRequest request, Model model) {
+        testItemDto.getAnswers().add(new AnswerDto());
+        if (AJAX_HEADER_VALUE.equals(request.getHeader(AJAX_HEADER_NAME))) {
+            model.addAttribute("testItem", testItemDto);
+            return "teacher/question::#answers";
+        } else {
+            return "teacher/question";
+        }
+    }
+
+    @PostMapping("/question/delete/{id}")
+    public String deleteQuestion(@PathVariable Long id) {
+        questionRepository.deleteById(id);
+        return "redirect:question";
+    }
+
 
 }

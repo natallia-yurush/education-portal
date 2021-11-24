@@ -2,7 +2,6 @@ package by.nyurush.portal.dto;
 
 import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -12,6 +11,6 @@ public class TestItemDto {
 
     private String questionText;
 
-//    private List<AnswerDto> answerDtoList = new ArrayList<>();
+    private List<AnswerDto> answers;
 
 }

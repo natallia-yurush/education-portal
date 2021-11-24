@@ -47,7 +47,6 @@ public class UserServiceImpl implements UserService {
         user.setActive(false);
         User registeredUser = userRepository.save(user);
 
-        //todo
         String activationCode = generateCode();
         redisService.addCode(activationCode, user.getEmail());
         mailService.sendConfirmationEmail(user.getEmail(), activationCode);
@@ -155,20 +154,6 @@ public class UserServiceImpl implements UserService {
     public User findByEmailOrUsername(String credentials) {
         return userRepository.findByEmailOrUsername(credentials, credentials)
                 .orElseThrow(UserNotFoundException::new);
-    }
-
-    public User findByUsernameAndPassword(String username, String password) {
-        User user = findByUsername(username);
-        if (user != null) {
-            if (passwordEncoder.matches(password, user.getPassword())) {
-                return user;
-            }
-        }
-        return null;
-    }
-
-    public void deleteById(Long id) {
-        userRepository.deleteById(id);
     }
 
     private String generateCode() {
