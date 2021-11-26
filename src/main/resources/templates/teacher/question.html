@@ -111,7 +111,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link"> <!--todo-->
+                        <a href="#" class="nav-link">
                             <i class="nav-icon far fa-file-word"></i>
                             <p>
                                 Online Exam
@@ -126,13 +126,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="manage-exam.html" class="nav-link">
-                                    <i class="nav-icon fa fa-book"></i>
-                                    <p>Exam Management</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="assign-exam.html" class="nav-link">
+                                <a th:href="@{/teacher/assign-exam}" class="nav-link">
                                     <i class="nav-icon fa fa-book"></i>
                                     <p>Assign Exam</p>
                                 </a>
@@ -140,7 +134,7 @@
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a href="exam-result.html" class="nav-link">
+                        <a th:href="@{/teacher/exam-results}" class="nav-link">
                             <i class="nav-icon fa fa-star"></i>
                             <p>
                                 Scores
@@ -148,7 +142,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="summary.html" class="nav-link">
+                        <a th:href="@{/teacher/summary}" class="nav-link">
                             <i class="nav-icon fa fa-poll"></i>
                             <p>
                                 Exam Result Summary

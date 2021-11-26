@@ -1,4 +1,4 @@
-package by.nyurush.portal.controller;
+package by.nyurush.portal.dto;
 
 import lombok.Data;
 
@@ -7,5 +7,5 @@ import java.util.List;
 @Data
 public class QuestionDto {
     private String text;
-    private List<AnswerDto> answerDtos;
+    private List<UserAnswerDto> answerDtos;
 }

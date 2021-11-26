@@ -5,10 +5,10 @@
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <title>Exam Management System</title>
       <!-- Font Awesome -->
-      <link rel="stylesheet" href="fontawesome/css/all.min.css">
-      <link rel="stylesheet" href="css/adminlte.min.css">
-            <link rel="stylesheet" href="css/style.css">
-            <link rel="stylesheet" href="tables/datatables-bs4/css/dataTables.bootstrap4.min.css">
+      <link rel="stylesheet" href="/fontawesome/css/all.min.css">
+      <link rel="stylesheet" href="/css/adminlte.min.css">
+            <link rel="stylesheet" href="/css/style.css">
+            <link rel="stylesheet" href="/tables/datatables-bs4/css/dataTables.bootstrap4.min.css">
             <style type="text/css">
                td a.btn{
                   font-size: 0.7rem;
@@ -66,39 +66,39 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: rgba(39,93,43);">
                  <!-- Brand Logo -->
      <a href="index.html" class="brand-link animated swing">
-     <img src="img/logo.png" alt="DSMS Logo" width="200" style="margin-bottom: -50px;">
+     <img src="/img/logo.png" alt="DSMS Logo" width="200" style="margin-bottom: -50px;">
      </a>
      <!-- Sidebar -->
      <div class="sidebar">
         <!-- Sidebar Menu -->
-        <nav class="mt-2">
-         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-            <li class="nav-item">
-               <a href="index.html" class="nav-link">
-                  <i class="nav-icon fa fa-tachometer-alt"></i>
-                  <p>
-                     Dashboard
-                  </p>
-               </a>
-            </li>
-            <li class="nav-item">
-               <a href="upcoming-exam.html" class="nav-link">
-                  <i class="nav-icon fa fa-file-signature"></i>
-                  <p>
-                     Upcoming Exam
-                  </p>
-               </a>
-            </li>
-            <li class="nav-item">
-               <a href="result.html" class="nav-link">
-                  <i class="nav-icon fa fa-star"></i>
-                  <p>
-                     Scores
-                  </p>
-               </a>
-            </li>
-         </ul>
-        </nav>
+         <nav class="mt-2">
+             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                 <li class="nav-item">
+                     <a th:href="@{/student/index}" class="nav-link">
+                         <i class="nav-icon fa fa-tachometer-alt"></i>
+                         <p>
+                             Dashboard
+                         </p>
+                     </a>
+                 </li>
+                 <li class="nav-item">
+                     <a th:href="@{/student/upcoming-exams}" class="nav-link">
+                         <i class="nav-icon fa fa-file-signature"></i>
+                         <p>
+                             Upcoming Exam
+                         </p>
+                     </a>
+                 </li>
+                 <li class="nav-item">
+                     <a th:href="@{/student/test/result}" class="nav-link">
+                         <i class="nav-icon fa fa-star"></i>
+                         <p>
+                             Scores
+                         </p>
+                     </a>
+                 </li>
+             </ul>
+         </nav>
                <!-- /.sidebar-menu -->
             </div>
             <!-- /.sidebar -->
@@ -136,53 +136,23 @@
                      <thead>
                        <tr>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Exam Name</th>
-                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Subject</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Passing Score</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Duration</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Take Exam</th>
                          <th class="text-secondary opacity-7"></th>
                        </tr>
                      </thead>
                      <tbody>
-                       <tr>
-                        <td>EXAM 1</td>
-                         <td>Mathematics</td>
-                         <td>60 mins</td>
+
+                     <tr th:each="exam : ${upcomingExams}">
+                         <td th:text="${exam.name}"></td>
+                         <td th:text="${exam.passingScore}"></td>
+                         <td th:text="${exam.timerInMinutes}"></td>
                          <td>
-                            <a class="btn btn-sm bg3" href="#"><i class="fa fa-file-word"></i> Take Exam</a>
+                             <a class="btn btn-sm bg3" href="#"><i class="fa fa-file-word"></i> Take Exam</a>
                          </td>
-                       </tr>
-                       <tr>
-                        <td>EXAM 2</td>
-                         <td>Programming</td>
-                         <td>75 mins</td>
-                         <td>
-                            <a class="btn btn-sm bg3" href="#"><i class="fa fa-file-word"></i> Take Exam</a>
-                         </td>
-                       </tr>
-                       <tr>
-                        <td>EXAM 3</td>
-                         <td>English</td>
-                         <td>45 mins</td>
-                         <td>
-                            <a class="btn btn-sm bg3" href="#"><i class="fa fa-file-word"></i> Take Exam</a>
-                         </td>
-                       </tr>
-                       <tr>
-                        <td>EXAM 4</td>
-                         <td>Science</td>
-                         <td>60 mins</td>
-                         <td>
-                            <a class="btn btn-sm bg3" href="#"><i class="fa fa-file-word"></i> Take Exam</a>
-                         </td>
-                       </tr>
-                       <tr>
-                        <td>EXAM 5</td>
-                         <td>Data Structure</td>
-                         <td>80 mins</td>
-                         <td>
-                            <a class="btn btn-sm bg3" href="#"><i class="fa fa-file-word"></i> Take Exam</a>
-                         </td>
-                       </tr>
+                     </tr>
+
                      </tbody>
                    </table>
                </div>
@@ -205,7 +175,7 @@
       <div class="modal-dialog modal-dialog-centered">
          <div class="modal-content">
             <div class="modal-body text-center">
-               <img src="img/sent.png" alt="" width="50" height="46">
+               <img src="/img/sent.png" alt="" width="50" height="46">
                <h3>Are you sure want to delete this Result?</h3>
                <div class="m-t-20"> <a href="#" class="btn btn-white" data-dismiss="modal">Close</a>
                   <button type="submit" class="btn bg1">Delete</button>
@@ -215,14 +185,14 @@
       </div>
    </div>
    <!-- jQuery -->
-   <script src="jquery/jquery.min.js"></script>
-   <script src="js/bootstrap.bundle.min.js"></script>
-   <script src="js/adminlte.js"></script>
+   <script src="/jquery/jquery.min.js"></script>
+   <script src="/js/bootstrap.bundle.min.js"></script>
+   <script src="/js/adminlte.js"></script>
    <!-- DataTables  & Plugins -->
-   <script src="tables/datatables/jquery.dataTables.min.js"></script>
-   <script src="tables/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-   <script src="tables/datatables-responsive/js/responsive.bootstrap4.min.js"></script>s
-   <script src="tables/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+   <script src="/tables/datatables/jquery.dataTables.min.js"></script>
+   <script src="/tables/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+   <script src="/tables/datatables-responsive/js/responsive.bootstrap4.min.js"></script>s
+   <script src="/tables/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
    <script>
       $(function () {
          $("#example1").DataTable();

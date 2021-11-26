@@ -5,9 +5,9 @@
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <title>Exam Management System</title>
       <!-- Font Awesome -->
-      <link rel="stylesheet" href="fontawesome/css/all.min.css">
-      <link rel="stylesheet" href="css/adminlte.min.css">
-            <link rel="stylesheet" href="css/style.css">
+      <link rel="stylesheet" href="/fontawesome/css/all.min.css">
+      <link rel="stylesheet" href="/css/adminlte.min.css">
+            <link rel="stylesheet" href="/css/style.css">
             <style type="text/css">
                td a.btn{
                   font-size: 0.7rem;
@@ -65,7 +65,7 @@
          <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: rgba(39,93,43);">
                         <!-- Brand Logo -->
             <a href="index.html" class="brand-link animated swing">
-            <img src="img/logo.png" alt="DSMS Logo" width="200" style="margin-bottom: -50px;">
+            <img src="/img/logo.png" alt="DSMS Logo" width="200" style="margin-bottom: -50px;">
             </a>
             <!-- Sidebar -->
             <div class="sidebar">
@@ -73,7 +73,7 @@
                <nav class="mt-2">
                   <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                      <li class="nav-item">
-                        <a href="index.html" class="nav-link">
+                        <a th:href="@{/student/index}" class="nav-link">
                            <i class="nav-icon fa fa-tachometer-alt"></i>
                            <p>
                               Dashboard
@@ -81,7 +81,7 @@
                         </a>
                      </li>
                      <li class="nav-item">
-                        <a href="upcoming-exam.html" class="nav-link">
+                        <a th:href="@{/student/upcoming-exams}" class="nav-link">
                            <i class="nav-icon fa fa-file-signature"></i>
                            <p>
                               Upcoming Exam
@@ -89,7 +89,7 @@
                         </a>
                      </li>
                      <li class="nav-item">
-                        <a href="result.html" class="nav-link">
+                        <a th:href="@{/student/test/result}" class="nav-link">
                            <i class="nav-icon fa fa-star"></i>
                            <p>
                               Scores
@@ -199,7 +199,7 @@
       </div>
       <!-- ./wrapper -->
       <!-- jQuery -->
-      <script src="jquery/jquery.min.js"></script>
-      <script src="js/adminlte.js"></script>
+      <script src="/jquery/jquery.min.js"></script>
+      <script src="/js/adminlte.js"></script>
    </body>
 </html>

@@ -43,6 +43,9 @@ public class Exam {
     @Column(name = "end_date")
     private Date endDate;
 
+    @Column(name="passing_score")
+    private Double passingScore;
+
     @Column(name = "timer_in_minutes")
     private Long timerInMinutes;
 

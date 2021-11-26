@@ -3,11 +3,15 @@ package by.nyurush.portal.controller;
 import by.nyurush.portal.dto.AnswerDto;
 import by.nyurush.portal.dto.AssignExamDto;
 import by.nyurush.portal.dto.ExamDto;
+import by.nyurush.portal.dto.ExamResultSummaryDto;
+import by.nyurush.portal.dto.SummaryDto;
 import by.nyurush.portal.dto.TestItemDto;
 import by.nyurush.portal.entity.Exam;
+import by.nyurush.portal.entity.ExamResult;
 import by.nyurush.portal.entity.Question;
 import by.nyurush.portal.entity.User;
 import by.nyurush.portal.repository.ExamRepository;
+import by.nyurush.portal.repository.ExamResultRepository;
 import by.nyurush.portal.repository.QuestionRepository;
 import by.nyurush.portal.repository.UserRepository;
 import by.nyurush.portal.service.UserService;
@@ -36,6 +40,7 @@ public class TeacherController {
 
     private final ExamRepository examRepository;
     private final QuestionRepository questionRepository;
+    private final ExamResultRepository examResultRepository;
     private final UserRepository userRepository;
     private final UserService userService;
     private final ConversionService conversionService;
@@ -136,9 +141,45 @@ public class TeacherController {
 
     @PostMapping("/unassign/{userId}/{courseId}")
     public String unassignExam(@PathVariable("userId") Long userId,
-                                  @PathVariable("examId") Long examId) {
+                               @PathVariable("examId") Long examId) {
         userService.unassignExam(userId, examId);
         return "redirect:/teacher/assign-exam";
+    }
+
+    @GetMapping("/exam-results")
+    public String viewExamResults(Model model) {
+        List<ExamResult> examResultList = examResultRepository.findAll();
+        model.addAttribute("examResults", examResultList);
+        return "teacher/exam-result";
+    }
+
+    @GetMapping("/score-card/{userId}/{examId}")
+    public String viewExamResults(@PathVariable Long userId,
+                                  @PathVariable Long examId,
+                                  Model model) {
+        ExamResult examResult = examResultRepository.findByUser_IdAndExam_Id(userId, examId).orElseThrow();
+        model.addAttribute("examResult", examResult);
+        return "teacher/view-score";
+    }
+
+    @PostMapping("/exam-result/delete/{resultId}")
+    public String viewExamResults(@PathVariable Long resultId) {
+        examResultRepository.deleteById(resultId);
+        return "redirect:exam-results";
+    }
+
+    @GetMapping("summary")
+    public String viewExamResultSummary(Model model) {
+        List<SummaryDto> summaryDtos = examResultRepository.getExamResultSummary();
+        List<ExamResultSummaryDto> examResultSummaryDtoList = summaryDtos.stream().map(summaryDto -> {
+            ExamResultSummaryDto examResultSummaryDto = new ExamResultSummaryDto();
+            examResultSummaryDto.setName(summaryDto.getName());
+            examResultSummaryDto.setPassed(summaryDto.getPassed());
+            examResultSummaryDto.setFailed(summaryDto.getFailed());
+            return examResultSummaryDto;
+        }).collect(Collectors.toList());
+        model.addAttribute("summaryList", examResultSummaryDtoList);
+        return "teacher/summary";
     }
 
 }

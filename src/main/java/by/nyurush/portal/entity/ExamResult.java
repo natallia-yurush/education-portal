@@ -2,43 +2,45 @@ package by.nyurush.portal.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.util.List;
 
-@Table(name = "answer", schema = "public")
+@Table(name = "exam_result", schema = "public")
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
 @Builder
 @Entity
 @Getter
 @Setter
-public class Answer {
+public class ExamResult {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "text", unique = true)
-    private String text;
+    @ManyToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name="user_id")
+    private User user;
 
-    @ManyToMany(mappedBy = "answerList")
-    @EqualsAndHashCode.Exclude
-    private List<Question> questionList;
+    @ManyToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name="exam_id")
+    private Exam exam;
 
-    @ManyToMany(mappedBy = "correctAnswerList")
-    @EqualsAndHashCode.Exclude
-    private List<Question> questionsToCorrectAnswers;
+    @Column(name="score")
+    private Double score;
+
+    @Column(name="passed")
+    private boolean passed;
 }

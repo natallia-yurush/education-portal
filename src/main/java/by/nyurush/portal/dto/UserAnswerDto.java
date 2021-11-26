@@ -1,9 +1,9 @@
-package by.nyurush.portal.controller;
+package by.nyurush.portal.dto;
 
 import lombok.Data;
 
 @Data
-public class AnswerDto {
+public class UserAnswerDto {
     private String text;
     private boolean selected;
 }

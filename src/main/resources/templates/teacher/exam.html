@@ -82,7 +82,7 @@
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                     data-accordion="false">
                     <li class="nav-item">
-                        <a href="index.html" class="nav-link">
+                        <a th:href="@{/teacher/index}" class="nav-link">
                             <i class="nav-icon fa fa-tachometer-alt"></i>
                             <p>
                                 Dashboard
@@ -90,7 +90,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="exam.html" class="nav-link">
+                        <a th:href="@{/teacher/exams}" class="nav-link">
                             <i class="nav-icon fa fa-file-signature"></i>
                             <p>
                                 Exam
@@ -107,19 +107,13 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="question.html" class="nav-link">
+                                <a th:href="@{/teacher/question}" class="nav-link">
                                     <i class="nav-icon fa fa-book"></i>
                                     <p>Question Bank</p>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="manage-exam.html" class="nav-link">
-                                    <i class="nav-icon fa fa-book"></i>
-                                    <p>Exam Management</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="assign-exam.html" class="nav-link">
+                                <a th:href="@{/teacher/assign-exam}" class="nav-link">
                                     <i class="nav-icon fa fa-book"></i>
                                     <p>Assign Exam</p>
                                 </a>
@@ -127,7 +121,7 @@
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a href="exam-result.html" class="nav-link">
+                        <a th:href="@{/teacher/exam-results}" class="nav-link">
                             <i class="nav-icon fa fa-star"></i>
                             <p>
                                 Scores
@@ -135,7 +129,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="summary.html" class="nav-link">
+                        <a th:href="@{/teacher/summary}" class="nav-link">
                             <i class="nav-icon fa fa-poll"></i>
                             <p>
                                 Exam Result Summary

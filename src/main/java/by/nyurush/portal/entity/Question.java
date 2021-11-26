@@ -2,6 +2,7 @@ package by.nyurush.portal.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,6 +24,7 @@ import java.util.List;
 @Table(name = "question", schema = "public")
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 @Builder
 @Entity
 @Getter
@@ -34,13 +36,15 @@ public class Question {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "text")
+    @Column(name = "text", unique = true)
     private String text;
 
+    @EqualsAndHashCode.Exclude
     @ManyToOne
     @JoinColumn(name="exam_id")
     private Exam exam;
 
+    @EqualsAndHashCode.Exclude
     @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(
             name = "question_answer",
@@ -49,6 +53,7 @@ public class Question {
     )
     private List<Answer> answerList;
 
+    @EqualsAndHashCode.Exclude
     @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(
             name = "question_correct_answer",

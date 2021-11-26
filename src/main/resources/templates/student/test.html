@@ -86,10 +86,9 @@
         <div class="sidebar">
             <!-- Sidebar Menu -->
             <nav class="mt-2">
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                    data-accordion="false">
+                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                     <li class="nav-item">
-                        <a href="index.html" class="nav-link">
+                        <a th:href="@{/student/index}" class="nav-link">
                             <i class="nav-icon fa fa-tachometer-alt"></i>
                             <p>
                                 Dashboard
@@ -97,7 +96,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="upcoming-exam.html" class="nav-link">
+                        <a th:href="@{/student/upcoming-exams}" class="nav-link">
                             <i class="nav-icon fa fa-file-signature"></i>
                             <p>
                                 Upcoming Exam
@@ -105,7 +104,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="result.html" class="nav-link">
+                        <a th:href="@{/student/test/result}" class="nav-link">
                             <i class="nav-icon fa fa-star"></i>
                             <p>
                                 Scores
