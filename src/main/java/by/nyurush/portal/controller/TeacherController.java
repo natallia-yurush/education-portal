@@ -4,7 +4,6 @@ import by.nyurush.portal.dto.AnswerDto;
 import by.nyurush.portal.dto.AssignExamDto;
 import by.nyurush.portal.dto.ExamDto;
 import by.nyurush.portal.dto.ExamResultSummaryDto;
-import by.nyurush.portal.dto.SummaryDto;
 import by.nyurush.portal.dto.TestItemDto;
 import by.nyurush.portal.entity.Exam;
 import by.nyurush.portal.entity.ExamResult;
@@ -14,6 +13,7 @@ import by.nyurush.portal.repository.ExamRepository;
 import by.nyurush.portal.repository.ExamResultRepository;
 import by.nyurush.portal.repository.QuestionRepository;
 import by.nyurush.portal.repository.UserRepository;
+import by.nyurush.portal.service.ExamResultService;
 import by.nyurush.portal.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.core.convert.ConversionService;
@@ -44,6 +44,7 @@ public class TeacherController {
     private final UserRepository userRepository;
     private final UserService userService;
     private final ConversionService conversionService;
+    private final ExamResultService examResultService;
 
     @GetMapping("/index")
     public String getIndex(Model model) {
@@ -170,15 +171,12 @@ public class TeacherController {
 
     @GetMapping("summary")
     public String viewExamResultSummary(Model model) {
-        List<SummaryDto> summaryDtos = examResultRepository.getExamResultSummary();
-        List<ExamResultSummaryDto> examResultSummaryDtoList = summaryDtos.stream().map(summaryDto -> {
-            ExamResultSummaryDto examResultSummaryDto = new ExamResultSummaryDto();
-            examResultSummaryDto.setName(summaryDto.getName());
-            examResultSummaryDto.setPassed(summaryDto.getPassed());
-            examResultSummaryDto.setFailed(summaryDto.getFailed());
-            return examResultSummaryDto;
-        }).collect(Collectors.toList());
+        List<ExamResultSummaryDto> examResultSummaryDtoList = examResultService.getExamResultSummaryDtoList();
         model.addAttribute("summaryList", examResultSummaryDtoList);
+        model.addAttribute("examNameList", examResultService.getExamNameList());
+        model.addAttribute("passedList", examResultService.getPassedList());
+        model.addAttribute("failedList", examResultService.getFailedList());
+
         return "teacher/summary";
     }
 

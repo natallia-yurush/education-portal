@@ -2,6 +2,7 @@ package by.nyurush.portal.service.impl;
 
 import by.nyurush.portal.dto.ExamResultDetailsDto;
 import by.nyurush.portal.dto.ExamResultSummaryDto;
+import by.nyurush.portal.dto.SummaryDto;
 import by.nyurush.portal.entity.Exam;
 import by.nyurush.portal.entity.ExamResult;
 import by.nyurush.portal.entity.Question;
@@ -18,6 +19,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @AllArgsConstructor
@@ -75,7 +79,7 @@ public class ExamResultServiceImpl implements ExamResultService {
         User user = examResult.getUser();
 
         List<Question> questionList = exam.getQuestionList();
-        for(Question question : questionList) {
+        for (Question question : questionList) {
             ExamResultDetailsDto examResultDetailsDto = new ExamResultDetailsDto();
             examResultDetailsDto.setQuestion(question);
             UserAnswer userAnswer = userAnswerRepository.findByExam_IdAndUser_IdAndQuestion_Id(exam.getId(), user.getId(), question.getId()).orElseThrow();
@@ -87,14 +91,42 @@ public class ExamResultServiceImpl implements ExamResultService {
         return examResultDetailsDtoList;
     }
 
-//    @Override
-//    public List<ExamResultSummaryDto> getExamResultSummary() {
-//        List<ExamResultSummaryDto> examResultSummaryList = new ArrayList<>();
-//        List<ExamResult> examResultList = examResultRepository.findAll();
-//
-//        examResultList.forEach(result -> );
-//
-//        return null;
-//    }
+    @Override
+    public List<ExamResultSummaryDto> getExamResultSummaryDtoList() {
+        List<SummaryDto> summaryDtos = examResultRepository.getExamResultSummary();
+        return summaryDtos.stream()
+                .map(summaryDto -> {
+                    ExamResultSummaryDto examResultSummaryDto = new ExamResultSummaryDto();
+                    examResultSummaryDto.setName(summaryDto.getName());
+                    examResultSummaryDto.setPassed(summaryDto.getPassed());
+                    examResultSummaryDto.setFailed(summaryDto.getFailed());
+                    return examResultSummaryDto;
+                })
+                .collect(toList());
+    }
+
+    @Override
+    public List<String> getExamNameList() {
+        List<ExamResultSummaryDto> examResultSummaryDtoList = getExamResultSummaryDtoList();
+        return examResultSummaryDtoList.stream()
+                .map(ExamResultSummaryDto::getName)
+                .collect(toList());
+    }
+
+    @Override
+    public List<Integer> getPassedList() {
+        List<ExamResultSummaryDto> examResultSummaryDtoList = getExamResultSummaryDtoList();
+        return examResultSummaryDtoList.stream()
+                .map(ExamResultSummaryDto::getPassed)
+                .collect(toList());
+    }
+
+    @Override
+    public List<Integer> getFailedList() {
+        List<ExamResultSummaryDto> examResultSummaryDtoList = getExamResultSummaryDtoList();
+        return examResultSummaryDtoList.stream()
+                .map(ExamResultSummaryDto::getFailed)
+                .collect(toList());
+    }
 
 }

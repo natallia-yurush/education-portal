@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +46,7 @@ public class AuthController {
     }
 
     @PostMapping("login")
-    public String login(@ModelAttribute("authInfo") AuthorizationDto authorizationDto) {
+    public String login(@ModelAttribute("authInfo") AuthorizationDto authorizationDto, HttpServletResponse response) {
         try {
             String email = authorizationDto.getUsername();
             authenticationManager.authenticate(
@@ -60,13 +61,15 @@ public class AuthController {
 
             String token = jwtTokenProvider.createToken(email, singletonList(user.getRole()));
 
-            // TODO: where I should store token ?
-            Map<Object, Object> response = new HashMap<>();
-            response.put("email", email);
-            response.put("token", token);
+            // create a cookie
+            Cookie cookie = new Cookie("Authorization", token);
+            cookie.setMaxAge(7 * 24 * 60 * 60); // expires in 7 days
+
+            //add cookie to response
+            response.addCookie(cookie);
 
             if (user.getRole() == UserRole.ROLE_ADMIN) {
-                return "admin/index";
+                return "redirect:http://localhost:8080/admin/index";
             } else if (user.getRole() == UserRole.ROLE_STUDENT) {
                 return "student/index";
             } else if (user.getRole() == UserRole.ROLE_TEACHER) {
@@ -111,4 +114,14 @@ public class AuthController {
         return "redirect:http://localhost:8080";
     }
 
+    @GetMapping("/logout")
+    public String logout(HttpServletResponse response) {
+        Cookie cookie = new Cookie("Authorization", null);
+        cookie.setMaxAge(0);
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        response.addCookie(cookie);
+
+        return "redirect:/";
+    }
 }

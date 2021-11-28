@@ -62,7 +62,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-widget="fullscreen" th:href="@{/admin/index}">
+                <a class="nav-link" data-widget="fullscreen" th:href="@{/logout}">
                     <i class="fas fa-power-off" style="color: rgb(211, 209, 207);"></i>
                 </a>
             </li>
@@ -187,14 +187,14 @@
                                     <td><span class="badge bg-success" th:text="${teacher.active}"
                                               th:remove="tag">title</span></td>
                                     <td class="text-right">
-                                        <a class="btn btn-sm bg3" href="#" data-toggle="modal" data-target="#edit"><i
+                                        <a class="btn btn-sm bg3" href="#" data-toggle="modal" th:attr="data-target='#edit'+${teacher.id}"><i
                                                 class="fa fa-edit"></i> edit</a>
                                         <a class="btn btn-sm bg1" th:href="@{/user/delete/{id}(id=${teacher.id})}"
-                                           data-toggle="modal" data-target="#delete"><i
+                                           data-toggle="modal" th:attr="data-target='#delete'+${teacher.id}"><i
                                                 class="fa fa-trash-alt"></i> delete</a>
                                     </td>
 
-                                    <div id="delete" class="modal animated rubberBand delete-modal" role="dialog">
+                                    <div th:attr="id='delete'+${teacher.id}" class="modal animated rubberBand delete-modal" role="dialog">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
                                                 <div class="modal-body text-center">
@@ -213,7 +213,7 @@
                                     </div>
 
 
-                                    <div id="edit" class="modal animated rubberBand delete-modal" role="dialog">
+                                    <div th:attr="id='edit'+${teacher.id}" class="modal animated rubberBand delete-modal" role="dialog">
                                         <div class="modal-dialog modal-dialog-centered modal-lg">
                                             <div class="modal-content">
                                                 <div class="modal-body text-center">
@@ -422,7 +422,8 @@
 
                     <div class="card-footer">
                         <button type="submit" class="btn bg2">Save</button>
-                        <div class="m-t-20"><a class="btn btn-white" data-dismiss="modal">Cancel</a></div>
+                        <div class="m-t-20"><a class="btn btn-white"
+                                               data-dismiss="modal">Cancel</a></div>
                     </div>
                 </form>
             </div>

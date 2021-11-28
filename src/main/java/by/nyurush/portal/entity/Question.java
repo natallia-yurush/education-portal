@@ -40,7 +40,7 @@ public class Question {
     private String text;
 
     @EqualsAndHashCode.Exclude
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="exam_id")
     private Exam exam;
 

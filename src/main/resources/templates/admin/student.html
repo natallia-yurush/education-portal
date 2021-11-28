@@ -62,7 +62,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-widget="fullscreen" th:href="@{/admin/index}">
+                <a class="nav-link" data-widget="fullscreen" th:href="@{/logout}">
                     <i class="fas fa-power-off" style="color: rgb(211, 209, 207);"></i>
                 </a>
             </li>
@@ -175,12 +175,15 @@
                                 <tr th:each="student: ${students}">
                                     <td th:text="${student.id}"/>
                                     <td>
+
+
+                                        <img class='img-thumbnail' th:src="'data:image/jpeg;base64,' + ${imgUtil.getImgData(student.photo)}" />
 <!--                                        <img th:src="${student.photo}" >-->
 <!--                                        <img th:src="${student.photo}" >-->
 <!--                                        <input type="hidden" th:action="@{/admin/user/image/{id}(id=student.id)}">-->
 
 
-                                        <img class='img-thumbnail' th:src="'data:image/jpeg;base64,' + ${imgUtil.getImgData(student.photo)}" />
+<!--                                        <img class='img-thumbnail' th:src="'data:image/jpeg;base64,' + ${imgUtil.getImgData(student.photo)}" />-->
 
 <!--                                        <img th:src="'data:image/jpeg;base64,' + ${'avatar' + student.id}" />-->
 
@@ -197,14 +200,14 @@
                                     <td><span class="badge bg-success" th:text="${student.active}"
                                               th:remove="tag">title</span></td>
                                     <td class="text-right">
-                                        <a class="btn btn-sm bg3" href="#" data-toggle="modal" data-target="#edit"><i
+                                        <a class="btn btn-sm bg3" href="#" data-toggle="modal" th:attr="data-target='#edit'+${student.id}"><i
                                                 class="fa fa-edit"></i> edit</a>
                                         <a class="btn btn-sm bg1" th:href="@{/admin/user/delete/{id}(id=${student.id})}"
-                                           data-toggle="modal" data-target="#delete"><i
+                                           data-toggle="modal" th:attr="data-target='#delete'+${student.id}"><i
                                                 class="fa fa-trash-alt"></i> delete</a>
                                     </td>
 
-                                    <div id="delete" class="modal animated rubberBand delete-modal" role="dialog">
+                                    <div th:attr="id='delete'+${student.id}" class="modal animated rubberBand delete-modal" role="dialog">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
                                                 <div class="modal-body text-center">
@@ -223,7 +226,7 @@
                                     </div>
 
 
-                                    <div id="edit" class="modal animated rubberBand delete-modal" role="dialog">
+                                    <div th:attr="id='edit'+${student.id}" class="modal animated rubberBand delete-modal" role="dialog">
                                         <div class="modal-dialog modal-dialog-centered modal-lg">
                                             <div class="modal-content">
                                                 <div class="modal-body text-center">
@@ -396,7 +399,7 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="Uimage" class="float-left">Profile</label>
-                                    <input id="Uimage" type="file" class="form-control" th:field="*{photo}">
+                                    <input id="Uimage" type="file" accept="image/png, image/jpeg" class="form-control" th:field="*{photo}">
                                 </div>
                             </div>
 
@@ -427,7 +430,8 @@
 
                     <div class="card-footer">
                         <button type="submit" class="btn bg2">Save</button>
-                        <div class="m-t-20"><a class="btn btn-white" data-dismiss="modal">Cancel</a></div>
+                        <div class="m-t-20"><a class="btn btn-white"
+                                               data-dismiss="modal">Cancel</a></div>
                     </div>
                 </form>
             </div>

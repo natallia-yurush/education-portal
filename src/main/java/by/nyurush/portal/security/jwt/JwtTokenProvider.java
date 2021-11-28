@@ -8,6 +8,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -23,8 +25,7 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class JwtTokenProvider {
 
     @Value("${jwt.token.secret}")
@@ -32,7 +33,7 @@ public class JwtTokenProvider {
     @Value("${jwt.token.expired}")
     private Long validityInMilliseconds;
 
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
     @PostConstruct
     protected void init() {
@@ -60,10 +61,24 @@ public class JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest request) {
+//        String bearerToken = request.getHeader("Authorization");
+
+        String bearerToken = null;
+
         //todo CONSTANT STRING!
-        String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer_")) {
-            return bearerToken.substring(7);
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("Authorization")) {
+                    //do something
+                    //value can be retrieved using #cookie.getValue()
+                    bearerToken = cookie.getValue();
+                }
+            }
+        }
+
+        if (bearerToken != null) { //&& bearerToken.startsWith("Bearer_")
+            return bearerToken; //.substring(7);
         }
         return null;
     }

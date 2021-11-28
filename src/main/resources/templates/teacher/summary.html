@@ -62,7 +62,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-widget="fullscreen" href="../index.html">
+                <a class="nav-link" data-widget="fullscreen" th:href="@{/logout}">
                     <i class="fas fa-power-off" style="color: rgb(211, 209, 207);"></i>
                 </a>
             </li>
@@ -237,24 +237,27 @@ s
     });
 </script>
 <script src="/js/chart.js"></script>
-<script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
     document.addEventListener("DOMContentLoaded", function () {
         // Bar Chart
         var barChartData = {
-            labels: ["Exam 1", "Exam 2", "Exam 3", "Exam 4", "Exam 5"],
+            labels: /*[[${examNameList}]]*/ [0],
             datasets: [{
                 label: 'Passed',
                 backgroundColor: 'rgb(79,129,189)',
                 borderColor: 'rgba(0, 158, 251, 1)',
                 borderWidth: 1,
-                data: [30, 25, 30, 33, 41]
+                data: /*[[${passedList}]]*/ [0]
             },
                 {
                     label: 'Failed',
                     backgroundColor: 'rgb(192,80,77)',
                     borderColor: 'rgba(0, 158, 251, 1)',
                     borderWidth: 1,
-                    data: [5, 10, 5, 2, 4]
+                    data: /*[[${failedList}]]*/ [0],
                 }]
         };
 
@@ -271,7 +274,11 @@ s
         });
 
     });
+
+    /*]]>*/
 </script>
+
+
 </body>
 
 </html>

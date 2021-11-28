@@ -27,53 +27,42 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
-//        http
-//                .httpBasic().disable()
-//                .csrf().disable()
-//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//                .authorizeRequests()
-//                .antMatchers("/admin/*").hasRole("ADMIN")
-//
-//                .anyRequest().authenticated()
-//                .and()
-//                .apply(new JwtConfigurer(jwtTokenProvider));
+//        http.sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
+        http
+                .httpBasic().disable()
+                .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authorizeRequests()
+                .antMatchers("/admin/*").hasRole("ADMIN")
+                .antMatchers("/student/*").hasRole("STUDENT")
+                .antMatchers("/teacher/*").hasRole("TEACHER")
 
-//        http
-//                .httpBasic().disable()
-//                .csrf().disable()
-//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//                .authorizeRequests()
-//                .antMatchers("/admin/*").hasRole("ADMIN")
-//                .antMatchers("/user/*").hasRole("USER")
-//                .antMatchers("/", "/register", "/auth").permitAll()
-//                .and()
-//                .apply(new JwtConfigurer(jwtTokenProvider));
-//                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
+                .anyRequest().authenticated()
+                .and()
+                .apply(new JwtConfigurer(jwtTokenProvider));
     }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-//        web.ignoring().antMatchers("/",
-//                "/fontawesome/**",
-//                "/css/**",
-//                "/img/**",
-//                "/jquery/**",
-//                "/js/**",
-//                "/tables/**",
-//                "/login",
-//
-//                "/auth/registration/**",
-//                "/auth/confirm/**",
-//                "/auth/forgot_password/**",
-//                "/auth/reset/**",
-//                "/auth/check_code",
-//                "/articles"
-//        );
+        web.ignoring().antMatchers("/",
+                "/fontawesome/**",
+                "/css/**",
+                "/img/**",
+                "/jquery/**",
+                "/js/**",
+                "/tables/**",
+
+                "/login",
+                "/logout",
+                "/auth/registration/**",
+                "/auth/confirm/**",
+                "/auth/forgot_password/**",
+                "/auth/reset/**",
+                "/auth/check_code",
+                "/articles"
+        );
 
     }
 }

@@ -7,6 +7,8 @@ import by.nyurush.portal.entity.Course;
 import by.nyurush.portal.entity.User;
 import by.nyurush.portal.entity.UserRole;
 import by.nyurush.portal.repository.CourseRepository;
+import by.nyurush.portal.repository.UserRepository;
+import by.nyurush.portal.service.ExamResultService;
 import by.nyurush.portal.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.core.convert.ConversionService;
@@ -24,32 +26,38 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Base64;
 
+import static by.nyurush.portal.entity.UserRole.ROLE_STUDENT;
+import static by.nyurush.portal.entity.UserRole.ROLE_TEACHER;
+
 @Controller
 @RequestMapping(value = "/admin")
 @AllArgsConstructor
 public class AdminController {
 
     private final UserService userService;
+    private final UserRepository userRepository;
     private final ConversionService conversionService;
     private final CourseRepository courseRepository;
+    private final ExamResultService examResultService;
 
     @GetMapping("/index")
     public String getIndex(Model model) {
+        model.addAttribute("examNameList", examResultService.getExamNameList());
+        model.addAttribute("passedList", examResultService.getPassedList());
+        model.addAttribute("failedList", examResultService.getFailedList());
+
+        model.addAttribute("numberOfStudents", userRepository.countUserByRole(ROLE_STUDENT));
+        model.addAttribute("numberOfTeachers", userRepository.countUserByRole(ROLE_TEACHER));
+        model.addAttribute("numberOfCourses", courseRepository.count());
+
         return "admin/index";
     }
 
     @GetMapping(value = "/students", produces = MediaType.IMAGE_JPEG_VALUE)
     public String addStudent(Model model) {
         model.addAttribute("user", new UserDto());
-//        List<User> userList = userService.findAllStudents();
         model.addAttribute("students", userService.findAllStudents());
         model.addAttribute("imgUtil", new ImageUtil());
-//        for (User user : userList) {
-//            if (user.getPhoto() != null) {
-//                String base64 = Base64.getMimeEncoder().encodeToString(user.getPhoto());
-//                model.addAttribute("avatar" + user.getId(), base64);
-//            }
-//        }
         return "admin/student";
     }
 
@@ -63,7 +71,7 @@ public class AdminController {
     @PostMapping("/student")
     public String addStudent(@ModelAttribute("user") UserDto userDto) {
         User user = conversionService.convert(userDto, User.class);
-        user.setRole(UserRole.ROLE_STUDENT);
+        user.setRole(ROLE_STUDENT);
         userService.register(user);
 
         return "redirect:students";
@@ -82,11 +90,12 @@ public class AdminController {
     public String courses(Model model) {
         model.addAttribute("course", new CourseDto());
         model.addAttribute("courses", courseRepository.findAll());
+
         return "admin/course";
     }
 
     @PostMapping("/course")
-    public String addTeacher(@ModelAttribute("course") CourseDto courseDto) {
+    public String addCourse(@ModelAttribute("course") CourseDto courseDto) {
         Course course = conversionService.convert(courseDto, Course.class);
         courseRepository.save(course);
 
@@ -108,17 +117,9 @@ public class AdminController {
 
     @GetMapping("/user/image/{id}")
     public void showProductImage(@PathVariable Long id, Model model) throws IOException {
-
         User user = userService.findById(id);
         String base64 = Base64.getMimeEncoder().encodeToString(user.getPhoto());
         model.addAttribute("avatar" + id, base64);
-
-//        response.setContentType("image/jpeg"); // Or whatever format you wanna use
-//
-//        User user = userService.findById(id);
-//
-//        InputStream is = new ByteArrayInputStream(user.getPhoto());
-//        IOUtils.copy(is, response.getOutputStream());
     }
 
     @GetMapping("/image/display/{id}")
@@ -131,16 +132,15 @@ public class AdminController {
     }
 
     @PostMapping("/user/delete/{id}")
-    public String deleteUser(@PathVariable("id") String id) {
-        //todo
-        //userService.deleteById(Long.getLong(id));
+    public String deleteUser(@PathVariable("id") Long id) {
+        userRepository.deleteById(id);
         return "redirect:students";
     }
 
     @PostMapping("/course/delete/{id}")
     public String deleteCourse(@PathVariable("id") Long id) {
         courseRepository.deleteById(id);
-        return "redirect:courses";
+        return "redirect:/admin/courses";
     }
 
     @PostMapping("/unassign/{userId}/{courseId}")
@@ -150,14 +150,14 @@ public class AdminController {
         return "redirect:/admin/assign-teacher";
     }
 
-}
-
-class ImageUtil {
-
-    public String getImgData(byte[] byteData) {
-        if(byteData != null) {
-            return Base64.getMimeEncoder().encodeToString(byteData);
+    public static class ImageUtil {
+        public String getImgData(byte[] byteData) {
+            if (byteData != null) {
+                return Base64.getMimeEncoder().encodeToString(byteData);
+            }
+            return null;
         }
-        return null;
     }
 }
+
+

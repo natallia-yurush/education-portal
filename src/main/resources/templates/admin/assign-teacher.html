@@ -62,7 +62,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-widget="fullscreen" th:href="@{/admin/index}">
+                <a class="nav-link" data-widget="fullscreen" th:href="@{/logout}">
                     <i class="fas fa-power-off" style="color: rgb(211, 209, 207);"></i>
                 </a>
             </li>
@@ -179,6 +179,7 @@
                                     </div>
                                     <div class="col-md-12">
                                         <button type="submit" class="btn bg2">Save</button>
+                                        <button type="reset" class="btn bg1">Cancel</button>
                                     </div>
                     </form>
                 </div>
@@ -204,11 +205,13 @@
                                 <td th:text="${user.id}"/>
                                 <td th:text="${user.completeName}"/>
                                 <td class="text-right">
-                                    <a class="btn btn-sm bg1" th:href="@{/admin/unassign/{userId}/{courseId}(userId=${user.id},courseId=${course.id})}" data-toggle="modal" data-target="#delete"><i
+                                    <a class="btn btn-sm bg1"
+                                       th:href="@{/admin/unassign/{userId}/{courseId}(userId=${user.id},courseId=${course.id})}"
+                                       data-toggle="modal" th:attr="data-target='#delete'+${course.id}+'-'+${user.id}"><i
                                             class="fa fa-trash-alt"></i> unassign</a>
                                 </td>
 
-                                <div id="delete" class="modal animated rubberBand delete-modal" role="dialog">
+                                <div th:attr="id='delete'+${course.id}+'-'+${user.id}" class="modal animated rubberBand delete-modal" role="dialog">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-body text-center">
@@ -227,12 +230,6 @@
 
                             </tr>
                         </th:block>
-
-<!--                        <tr th:each="course: ${courses}">-->
-<!--                            <td th:text="${course.id}"/>-->
-<!--                            <td th:text="${course.name}"/>-->
-<!--                            <td th:text="${course.users}"/>-->
-<!--                        </tr>-->
                         </tbody>
                     </table>
                 </div>

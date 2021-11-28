@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -49,9 +50,9 @@ public class Exam {
     @Column(name = "timer_in_minutes")
     private Long timerInMinutes;
 
-    @OneToMany(mappedBy = "exam")
+    @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL)
     private List<Question> questionList;
 
-    @ManyToMany(mappedBy = "examList")
+    @ManyToMany(mappedBy = "examList", cascade = CascadeType.ALL)
     private List<User> userList;
 }

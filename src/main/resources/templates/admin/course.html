@@ -62,7 +62,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-widget="fullscreen" th:href="@{/admin/index}">
+                <a class="nav-link" data-widget="fullscreen" th:href="@{/logout}">
                     <i class="fas fa-power-off" style="color: rgb(211, 209, 207);"></i>
                 </a>
             </li>
@@ -167,25 +167,23 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label>Course Name</label>
-                                                <input type="text" class="form-control" placeholder="Course Name"
+                                                <input type="text" class="form-control"
+                                                       placeholder="Course Name"
                                                        th:field="*{name}">
                                             </div>
                                         </div>
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label>Description</label>
-                                                <textarea class="form-control" th:field="*{description}"></textarea>
+                                                <textarea class="form-control"
+                                                          th:field="*{description}"></textarea>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <button type="submit" class="btn bg2">Save</button>
-                                        <div class="m-t-20"><a class="btn btn-white" data-dismiss="modal">Cancel</a>
-                                        </div>
+                                        <button type="submit" class="btn bg1">Cancel</button>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
                     </form>
                 </div>
 
@@ -201,27 +199,29 @@
                         </thead>
                         <tbody>
 
+                        <tr th:each="courseDto: ${courses}">
 
-                        <tr th:each="course: ${courses}">
-
-                            <td th:text="${course.id}"/>
-                            <td th:text="${course.name}"/>
-                            <td th:text="${course.description}"/>
+                            <td th:text="${courseDto.id}"/>
+                            <td th:text="${courseDto.name}"/>
+                            <td th:text="${courseDto.description}"/>
                             <td class="text-right">
-                                <a class="btn btn-sm bg3" href="#"><i class="fa fa-edit"></i> edit</a>
-                                <a class="btn btn-sm bg1" th:href="@{/course/delete/{id}(id=${course.id})}"
-                                   data-toggle="modal" data-target="#delete"><i
-                                        class="fa fa-trash-alt"></i> delete</a>
+                                <a class="btn btn-sm bg3" data-toggle="modal"
+                                   th:attr="data-target='#edit'+${courseDto.id}"><i class="fa fa-edit"></i> edit</a>
+                                <a class="btn btn-sm bg1" data-toggle="modal"
+                                   th:attr="data-target='#delete'+${courseDto.id}"><i class="fa fa-trash-alt"></i>
+                                    delete</a>
+
                             </td>
 
                             <!-- ./wrapper -->
-                            <div id="delete" class="modal animated rubberBand delete-modal" role="dialog">
+                            <div th:attr="id='delete'+${courseDto.id}" class="modal animated rubberBand delete-modal"
+                                 role="dialog">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-body text-center">
                                             <img src="/img/sent.png" alt="" width="50" height="46">
                                             <h3>Are you sure want to delete this Course?</h3>
-                                            <form action="#" th:action="@{${'course/delete/'+ course.id}}"
+                                            <form th:action="@{/admin/course/delete/{id}(id=${courseDto.id})}"
                                                   th:method="post">
                                                 <div class="m-t-20"><a href="#" class="btn btn-white"
                                                                        data-dismiss="modal">Close</a>
@@ -233,8 +233,53 @@
                                 </div>
                             </div>
 
-                        </tr>
+                            <div th:attr="id='edit'+${courseDto.id}" class="modal animated rubberBand delete-modal"
+                                 role="dialog">
+                                <div class="modal-dialog modal-dialog-centered modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-body text-center">
+                                            <form method="post" th:action="@{/admin/course}" th:object="${course}">
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-md-12 float-left">
+                                                            <div class="float-left">
+                                                                <span class="fa fa-certificate"> Course Information</span>
+                                                            </div>
 
+                                                            <input class="form-control"
+                                                                   type="hidden"
+                                                                   th:value="${courseDto.id}" id="id" name="id"/>
+
+                                                            <div class="col-md-12">
+                                                                <div class="form-group">
+                                                                    <br>
+                                                                    <label>Course Name</label>
+                                                                    <input id="name" name="name" type="text"
+                                                                           class="form-control"
+                                                                           placeholder="Course Name"
+                                                                           th:value="${courseDto.name}">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12">
+                                                                <div class="form-group">
+                                                                    <label>Description</label>
+                                                                    <textarea id="description" name="description"
+                                                                              class="form-control"
+                                                                              th:text="${courseDto.description}"></textarea>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-12">
+                                                                <button type="submit" class="btn bg2">Save</button>
+                                                                <button type="submit" class="btn bg1">Cancel</button>
+                                                            </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </tr>
 
                         </tbody>
                     </table>

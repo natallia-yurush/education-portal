@@ -13,6 +13,7 @@ public class CourseConverter implements Converter<CourseDto, Course> {
     @Override
     public Course convert(CourseDto courseDto) {
         Course course = new Course();
+        course.setId(courseDto.getId());
         course.setName(courseDto.getName());
         course.setDescription(courseDto.getDescription());
         return course;

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -34,11 +35,11 @@ public class Answer {
     @Column(name = "text", unique = true)
     private String text;
 
-    @ManyToMany(mappedBy = "answerList")
+    @ManyToMany(mappedBy = "answerList", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     private List<Question> questionList;
 
-    @ManyToMany(mappedBy = "correctAnswerList")
+    @ManyToMany(mappedBy = "correctAnswerList", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     private List<Question> questionsToCorrectAnswers;
 }
