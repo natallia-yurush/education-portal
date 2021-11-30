@@ -2,7 +2,6 @@ package by.nyurush.portal.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,7 +17,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.util.List;
+import java.util.Set;
 
 @Table(name = "user_answer", schema = "public")
 @NoArgsConstructor
@@ -35,15 +34,15 @@ public class UserAnswer {
     private Long id;
 
     @ManyToOne(cascade = {CascadeType.ALL})
-    @JoinColumn(name="user_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(cascade = {CascadeType.ALL})
-    @JoinColumn(name="exam_id")
+    @JoinColumn(name = "exam_id")
     private Exam exam;
 
     @ManyToOne(cascade = {CascadeType.ALL})
-    @JoinColumn(name="question_id")
+    @JoinColumn(name = "question_id")
     private Question question;
 
     @ManyToMany(cascade = {CascadeType.ALL})
@@ -52,5 +51,5 @@ public class UserAnswer {
             joinColumns = {@JoinColumn(name = "user_answer_id")},
             inverseJoinColumns = {@JoinColumn(name = "answer_id")}
     )
-    private List<Answer> answerList;
+    private Set<Answer> answerList;
 }

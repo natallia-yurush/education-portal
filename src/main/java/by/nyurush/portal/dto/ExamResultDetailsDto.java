@@ -4,10 +4,10 @@ import by.nyurush.portal.entity.Answer;
 import by.nyurush.portal.entity.Question;
 import lombok.Data;
 
-import java.util.List;
+import java.util.Set;
 
 @Data
 public class ExamResultDetailsDto {
     private Question question;
-    private List<Answer> selectedAnswers;
+    private Set<Answer> selectedAnswers;
 }

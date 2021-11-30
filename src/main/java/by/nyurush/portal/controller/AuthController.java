@@ -4,8 +4,8 @@ import by.nyurush.portal.dto.AuthorizationDto;
 import by.nyurush.portal.entity.User;
 import by.nyurush.portal.entity.UserRole;
 import by.nyurush.portal.exception.user.UserAlreadyIsActiveException;
+import by.nyurush.portal.exception.user.UserIsNotActiveException;
 import by.nyurush.portal.security.jwt.JwtTokenProvider;
-import by.nyurush.portal.service.RedisService;
 import by.nyurush.portal.service.impl.UserServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +24,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
 
 import static java.util.Collections.singletonList;
 
@@ -55,8 +53,8 @@ public class AuthController {
             User user = userService.findByEmailOrUsername(email);
 
             if (!user.isActive()) {
-                log.warn("User {} already is not active", email);
-                throw new UserAlreadyIsActiveException("User " + email + " already is not active");
+                log.warn("User {} is not active", email);
+                throw new UserIsNotActiveException("User " + email + " is not active");
             }
 
             String token = jwtTokenProvider.createToken(email, singletonList(user.getRole()));
@@ -71,9 +69,9 @@ public class AuthController {
             if (user.getRole() == UserRole.ROLE_ADMIN) {
                 return "redirect:http://localhost:8080/admin/index";
             } else if (user.getRole() == UserRole.ROLE_STUDENT) {
-                return "student/index";
+                return "redirect:http://localhost:8080/student/index";
             } else if (user.getRole() == UserRole.ROLE_TEACHER) {
-                return "teacher/index";
+                return "redirect:http://localhost:8080/teacher/index";
             } else {
                 return "index";
             }
@@ -97,7 +95,7 @@ public class AuthController {
     public String forgotPassword(@RequestParam String email,
                                  HttpServletResponse response) {
         userService.resetPassword(email);
-        //todo return page with message that everything is alright and that is needed to check email
+        //todo return page with message that everything is ok and that is needed to check email
         return "reset-password";
     }
 

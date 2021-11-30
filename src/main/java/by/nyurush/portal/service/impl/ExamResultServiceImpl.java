@@ -17,6 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,7 +38,7 @@ public class ExamResultServiceImpl implements ExamResultService {
     public ExamResult calculateTestResult(Long examId) {
         //todo get user with token
         User user = userRepository.getById(3L);
-        Exam exam = examRepository.findById(examId).orElseThrow();
+        Exam exam = examRepository.findById(examId).orElseThrow(EntityNotFoundException::new);
 
         List<Question> questionList = exam.getQuestionList();
 
@@ -47,7 +48,7 @@ public class ExamResultServiceImpl implements ExamResultService {
         for (Question question : questionList) {
             UserAnswer userAnswer = userAnswerRepository
                     .findByExam_IdAndUser_IdAndQuestion_Id(examId, user.getId(), question.getId())
-                    .orElseThrow();
+                    .orElseThrow(EntityNotFoundException::new);
 
             allCorrectAnswers += question.getCorrectAnswerList().size();
             correctUserAnswers += userAnswer.getAnswerList().stream()
@@ -71,7 +72,7 @@ public class ExamResultServiceImpl implements ExamResultService {
 
     @Override
     public List<ExamResultDetailsDto> getExamResultDetails(Long examResultId) {
-        ExamResult examResult = examResultRepository.findById(examResultId).orElseThrow();
+        ExamResult examResult = examResultRepository.findById(examResultId).orElseThrow(EntityNotFoundException::new);
 
         List<ExamResultDetailsDto> examResultDetailsDtoList = new ArrayList<>();
 
@@ -82,7 +83,7 @@ public class ExamResultServiceImpl implements ExamResultService {
         for (Question question : questionList) {
             ExamResultDetailsDto examResultDetailsDto = new ExamResultDetailsDto();
             examResultDetailsDto.setQuestion(question);
-            UserAnswer userAnswer = userAnswerRepository.findByExam_IdAndUser_IdAndQuestion_Id(exam.getId(), user.getId(), question.getId()).orElseThrow();
+            UserAnswer userAnswer = userAnswerRepository.findByExam_IdAndUser_IdAndQuestion_Id(exam.getId(), user.getId(), question.getId()).orElseThrow(EntityNotFoundException::new);
             examResultDetailsDto.setSelectedAnswers(userAnswer.getAnswerList());
 
             examResultDetailsDtoList.add(examResultDetailsDto);

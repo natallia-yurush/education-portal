@@ -9,6 +9,7 @@ import by.nyurush.portal.entity.Exam;
 import by.nyurush.portal.entity.ExamResult;
 import by.nyurush.portal.entity.Question;
 import by.nyurush.portal.entity.User;
+import by.nyurush.portal.entity.UserRole;
 import by.nyurush.portal.repository.ExamRepository;
 import by.nyurush.portal.repository.ExamResultRepository;
 import by.nyurush.portal.repository.QuestionRepository;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +50,10 @@ public class TeacherController {
 
     @GetMapping("/index")
     public String getIndex(Model model) {
+
+        model.addAttribute("studentsNumber", userRepository.countUserByRole(UserRole.ROLE_STUDENT));
+        model.addAttribute("examNumber", examRepository.count());
+
         return "teacher/index";
     }
 
@@ -116,7 +122,7 @@ public class TeacherController {
     public String editQuestion(@PathVariable Long id, Model model) {
         TestItemDto testItemDto = new TestItemDto();
         testItemDto.setAnswers(new ArrayList<>());
-        Question question = questionRepository.findById(id).orElseThrow();
+        Question question = questionRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         question.getAnswerList().forEach(answer -> testItemDto.getAnswers().add(new AnswerDto()));
         model.addAttribute("itemToEdit", testItemDto);
 
@@ -133,8 +139,8 @@ public class TeacherController {
 
     @PostMapping("/assign-exam")
     public String assignExam(@ModelAttribute("exam") AssignExamDto assignExamDto) {
-        Exam exam = examRepository.findById(assignExamDto.getExamId()).orElseThrow();
-        User user = userRepository.findById(assignExamDto.getUserId()).orElseThrow();
+        Exam exam = examRepository.findById(assignExamDto.getExamId()).orElseThrow(EntityNotFoundException::new);
+        User user = userRepository.findById(assignExamDto.getUserId()).orElseThrow(EntityNotFoundException::new);
         user.getExamList().add(exam);
         userRepository.save(user);
         return "redirect:assign-exam";
@@ -158,7 +164,7 @@ public class TeacherController {
     public String viewExamResults(@PathVariable Long userId,
                                   @PathVariable Long examId,
                                   Model model) {
-        ExamResult examResult = examResultRepository.findByUser_IdAndExam_Id(userId, examId).orElseThrow();
+        ExamResult examResult = examResultRepository.findByUser_IdAndExam_Id(userId, examId).orElseThrow(EntityNotFoundException::new);
         model.addAttribute("examResult", examResult);
         return "teacher/view-score";
     }

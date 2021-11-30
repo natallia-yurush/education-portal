@@ -10,6 +10,7 @@ import java.util.Optional;
 
 public interface ExamResultRepository extends JpaRepository<ExamResult, Long> {
     List<ExamResult> findAllByUser_Id(Long userId);
+
     Optional<ExamResult> findByUser_IdAndExam_Id(Long userId, Long examId);
 
     @Query(value = "SELECT exam.name as name, " +

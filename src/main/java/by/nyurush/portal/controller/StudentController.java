@@ -8,13 +8,13 @@ import by.nyurush.portal.entity.ExamResult;
 import by.nyurush.portal.entity.Question;
 import by.nyurush.portal.entity.User;
 import by.nyurush.portal.entity.UserAnswer;
-import by.nyurush.portal.repository.AnswerRepository;
 import by.nyurush.portal.repository.ExamRepository;
 import by.nyurush.portal.repository.ExamResultRepository;
 import by.nyurush.portal.repository.QuestionRepository;
 import by.nyurush.portal.repository.UserAnswerRepository;
-import by.nyurush.portal.repository.UserRepository;
+import by.nyurush.portal.security.jwt.JwtTokenProvider;
 import by.nyurush.portal.service.ExamResultService;
+import by.nyurush.portal.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Controller;
@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,26 +35,39 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class StudentController {
 
+    private final JwtTokenProvider jwtTokenProvider;
     private final QuestionRepository questionRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final ExamRepository examRepository;
-    private final AnswerRepository answerRepository;
     private final UserAnswerRepository userAnswerRepository;
     private final ConversionService conversionService;
     private final ExamResultService examResultService;
     private final ExamResultRepository examResultRepository;
 
     @GetMapping("/index")
-    public String getIndex(Model model) {
+    public String getIndex(Model model, HttpServletRequest request) {
+        String email = jwtTokenProvider.getEmail(request);
+        User user = userService.findByUsername(email);
+
+        List<ExamResult> examResultList = examResultRepository.findAllByUser_Id(user.getId());
+        long passed = examResultList.stream().filter(ExamResult::isPassed).count();
+        long failed = examResultList.stream().filter(examResult -> !examResult.isPassed()).count();
+
+        model.addAttribute("totalExams", examRepository.count());
+        model.addAttribute("upcomingExams", user.getExamList().size());
+        model.addAttribute("passedExams", passed);
+        model.addAttribute("failedExams", failed);
+
         return "student/index";
     }
 
     @GetMapping("/test/{examId}")
-    public String getTest(@PathVariable Long examId, Model model) {
+    public String getTest(@PathVariable Long examId, Model model, HttpServletRequest request) {
         List<Question> questionList = questionRepository.findByExam_Id(examId);
-        // todo get user id by token
-        Long userId = 3L;
-        List<UserAnswer> userAnswers = userAnswerRepository.findAllByExam_IdAndUser_Id(examId, userId);
+        String email = jwtTokenProvider.getEmail(request);
+        User user = userService.findByUsername(email);
+
+        List<UserAnswer> userAnswers = userAnswerRepository.findAllByExam_IdAndUser_Id(examId, user.getId());
         userAnswers.forEach(userAnswer -> questionList.remove(userAnswer.getQuestion()));
 
         if (!questionList.isEmpty()) {
@@ -71,25 +86,27 @@ public class StudentController {
             model.addAttribute("examId", examId);
             return "student/test";
         } else {
-            return ""; //todo calculate  result
+            return "redirect:http://localhost:8080/test/calculate/" + examId; //todo calculate  result
         }
     }
 
     @PostMapping("/test/{examId}")
-    public String answerQuestion(@PathVariable Long examId, @ModelAttribute() QuestionDto question) {
+    public String answerQuestion(@PathVariable Long examId, @ModelAttribute() QuestionDto question, HttpServletRequest request) {
         UserAnswer userAnswer = conversionService.convert(question, UserAnswer.class);
-        Exam exam = examRepository.findById(examId).orElseThrow();
+        Exam exam = examRepository.findById(examId).orElseThrow(EntityNotFoundException::new);
         userAnswer.setExam(exam);
+        String email = jwtTokenProvider.getEmail(request);
+        User user = userService.findByUsername(email);
+        userAnswer.setUser(user);
 
         userAnswerRepository.save(userAnswer);
         return "redirect:" + examId;
     }
 
     @GetMapping("/test/result")
-    public String viewResult(Model model) {
-
-        //todo get with token
-        User user = userRepository.getById(3L);
+    public String viewResult(Model model, HttpServletRequest request) {
+        String email = jwtTokenProvider.getEmail(request);
+        User user = userService.findByUsername(email);
         List<ExamResult> examResultList = examResultRepository.findAllByUser_Id(user.getId());
 
         model.addAttribute("examResultList", examResultList);
@@ -98,8 +115,15 @@ public class StudentController {
     }
 
     @GetMapping("/test/calculate/{examId}")
-    public String calculateResult(@PathVariable Long examId) {
+    public String calculateResult(@PathVariable Long examId, HttpServletRequest request) {
+        // todo check logic for deleting from upcoming exams
         examResultService.calculateTestResult(examId);
+
+        Exam exam = examRepository.findById(examId).orElseThrow(EntityNotFoundException::new);
+        String email = jwtTokenProvider.getEmail(request);
+        User user = userService.findByUsername(email);
+        user.getExamList().remove(exam);
+
         return "redirect:/student/test/result";
     }
 
@@ -112,9 +136,9 @@ public class StudentController {
 
 
     @GetMapping("/upcoming-exams")
-    public String getUpcomingExams(Model model) {
-        //todo get with token
-        User user = userRepository.getById(3L);
+    public String getUpcomingExams(Model model, HttpServletRequest request) {
+        String email = jwtTokenProvider.getEmail(request);
+        User user = userService.findByUsername(email);
         List<Exam> upcomingExams = examRepository.findByUserListContains(user);
 
         model.addAttribute("upcomingExams", upcomingExams);

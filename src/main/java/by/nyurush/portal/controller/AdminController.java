@@ -116,7 +116,7 @@ public class AdminController {
     }
 
     @GetMapping("/user/image/{id}")
-    public void showProductImage(@PathVariable Long id, Model model) throws IOException {
+    public void showProductImage(@PathVariable Long id, Model model) {
         User user = userService.findById(id);
         String base64 = Base64.getMimeEncoder().encodeToString(user.getPhoto());
         model.addAttribute("avatar" + id, base64);

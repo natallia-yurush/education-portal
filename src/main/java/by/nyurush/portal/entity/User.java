@@ -18,7 +18,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import java.util.List;
+import java.util.Set;
 
 @Table(name = "user", schema = "public")
 @NoArgsConstructor
@@ -40,9 +40,9 @@ public class User {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "photo", columnDefinition="mediumblob")
+    @Column(name = "photo", columnDefinition = "mediumblob")
     @Lob
-    @Type(type="org.hibernate.type.BinaryType")
+    @Type(type = "org.hibernate.type.BinaryType")
     private byte[] photo;
 
     @Column(name = "username")
@@ -63,7 +63,7 @@ public class User {
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "course_id")}
     )
-    private List<Course> courseList;
+    private Set<Course> courseList;
 
     @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(
@@ -71,5 +71,5 @@ public class User {
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "exam_id")}
     )
-    private List<Exam> examList;
+    private Set<Exam> examList;
 }

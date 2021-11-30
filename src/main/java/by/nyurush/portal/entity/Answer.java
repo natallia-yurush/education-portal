@@ -15,7 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import java.util.List;
+import java.util.Set;
 
 @Table(name = "answer", schema = "public")
 @NoArgsConstructor
@@ -37,9 +37,9 @@ public class Answer {
 
     @ManyToMany(mappedBy = "answerList", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
-    private List<Question> questionList;
+    private Set<Question> questionList;
 
     @ManyToMany(mappedBy = "correctAnswerList", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
-    private List<Question> questionsToCorrectAnswers;
+    private Set<Question> questionsToCorrectAnswers;
 }

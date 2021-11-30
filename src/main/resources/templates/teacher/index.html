@@ -144,6 +144,8 @@
     </aside>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
+        <div th:insert="/fragment/alerts">
+        </div>
         <!-- Content Header (Page header) -->
         <div class="content-header">
             <div class="container-fluid">
@@ -176,12 +178,6 @@
                             <span class="info-box-icon bg1 elevation-1"><i class="fas fa-book"
                                                                            style="color: rgb(211, 209, 207);"></i></span>
 
-                            <div class="info-box-content">
-                                <span class="info-box-text">Number of Subjects</span>
-                                <span class="info-box-number">
-                  50
-                </span>
-                            </div>
                             <!-- /.info-box-content -->
                         </div>
                         <!-- /.info-box -->
@@ -193,8 +189,7 @@
 
                             <div class="info-box-content">
                                 <span class="info-box-text">Number of Students</span>
-                                <span class="info-box-number">
-                  100
+                                <span class="info-box-number" th:text="${studentsNumber}">
                 </span>
                             </div>
                             <!-- /.info-box-content -->
@@ -209,7 +204,7 @@
 
                             <div class="info-box-content">
                                 <span class="info-box-text">Number of Exams</span>
-                                <span class="info-box-number">10</span>
+                                <span class="info-box-number" th:text="${examNumber}"></span>
                             </div>
                             <!-- /.info-box-content -->
                         </div>

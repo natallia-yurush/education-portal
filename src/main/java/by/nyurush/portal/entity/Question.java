@@ -17,9 +17,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.List;
+import java.util.Set;
 
 @Table(name = "question", schema = "public")
 @NoArgsConstructor
@@ -41,7 +40,7 @@ public class Question {
 
     @EqualsAndHashCode.Exclude
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="exam_id")
+    @JoinColumn(name = "exam_id")
     private Exam exam;
 
     @EqualsAndHashCode.Exclude
@@ -51,7 +50,7 @@ public class Question {
             joinColumns = {@JoinColumn(name = "question_id")},
             inverseJoinColumns = {@JoinColumn(name = "answer_id")}
     )
-    private List<Answer> answerList;
+    private Set<Answer> answerList;
 
     @EqualsAndHashCode.Exclude
     @ManyToMany(cascade = {CascadeType.ALL})
@@ -60,5 +59,5 @@ public class Question {
             joinColumns = {@JoinColumn(name = "question_id")},
             inverseJoinColumns = {@JoinColumn(name = "answer_id")}
     )
-    private List<Answer> correctAnswerList;
+    private Set<Answer> correctAnswerList;
 }

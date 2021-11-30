@@ -17,6 +17,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Table(name = "exam", schema = "public")
 @NoArgsConstructor
@@ -54,5 +55,5 @@ public class Exam {
     private List<Question> questionList;
 
     @ManyToMany(mappedBy = "examList", cascade = CascadeType.ALL)
-    private List<User> userList;
+    private Set<User> userList;
 }

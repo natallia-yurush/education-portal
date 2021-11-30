@@ -4,6 +4,7 @@ import by.nyurush.portal.entity.Course;
 import by.nyurush.portal.entity.Exam;
 import by.nyurush.portal.entity.User;
 import by.nyurush.portal.entity.UserRole;
+import by.nyurush.portal.exception.EntityAlreadyExistException;
 import by.nyurush.portal.exception.RedisCodeNotFoundException;
 import by.nyurush.portal.exception.user.UserAlreadyExistException;
 import by.nyurush.portal.exception.user.UserAlreadyIsActiveException;
@@ -16,10 +17,12 @@ import by.nyurush.portal.service.RedisService;
 import by.nyurush.portal.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.postgresql.util.PSQLException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.UUID;
 
@@ -110,17 +113,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void assignTeacher(Long userId, Long courseId) {
-        Course course = courseRepository.findById(courseId).orElseThrow(); //todo
-        User user = userRepository.findById(userId).orElseThrow();
+        Course course = courseRepository.findById(courseId).orElseThrow(EntityNotFoundException::new); //todo
+        User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
 
-        user.getCourseList().add(course);
+        if(!user.getCourseList().add(course)) {
+            throw new EntityAlreadyExistException("The object already exists in the collection.");
+        }
         userRepository.save(user);
     }
 
     @Override
     public void unassignTeacher(Long userId, Long courseId) {
-        Course course = courseRepository.findById(courseId).orElseThrow(); //todo
-        User user = userRepository.findById(userId).orElseThrow();
+        Course course = courseRepository.findById(courseId).orElseThrow(EntityNotFoundException::new); //todo
+        User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
 
         user.getCourseList().remove(course);
         userRepository.save(user);
@@ -128,8 +133,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void unassignExam(Long userId, Long examId) {
-        Exam exam = examRepository.findById(examId).orElseThrow();
-        User user = userRepository.findById(userId).orElseThrow();
+        Exam exam = examRepository.findById(examId).orElseThrow(EntityNotFoundException::new);
+        User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
 
         user.getExamList().remove(exam);
         userRepository.save(user);
@@ -137,7 +142,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(Long id) {
-        return userRepository.findById(id).orElseThrow(); //todo add exception
+        return userRepository.findById(id).orElseThrow(EntityNotFoundException::new); //todo add exception
     }
 
     @Override

@@ -10,7 +10,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
+import javax.persistence.EntityNotFoundException;
+import java.util.HashSet;
 import java.util.List;
 
 @Component
@@ -22,11 +23,11 @@ public class QuestionConverter implements Converter<TestItemDto, Question> {
     @Override
     public Question convert(TestItemDto testItemDto) {
         Question question = new Question();
-        Exam exam = examRepository.findById(testItemDto.getExamId()).orElseThrow(); //todo
+        Exam exam = examRepository.findById(testItemDto.getExamId()).orElseThrow(EntityNotFoundException::new); //todo
         question.setText(testItemDto.getQuestionText());
         question.setExam(exam);
-        question.setAnswerList(new ArrayList<>());
-        question.setCorrectAnswerList(new ArrayList<>());
+        question.setAnswerList(new HashSet<>());
+        question.setCorrectAnswerList(new HashSet<>());
         List<AnswerDto> answerDtoList = testItemDto.getAnswers();
 
         answerDtoList.forEach(answerDto -> setAnswersToQuestion(question, answerDto));
