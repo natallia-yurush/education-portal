@@ -78,7 +78,9 @@ public class ExamResultServiceImpl implements ExamResultService {
         for (Question question : questionList) {
             ExamResultDetailsDto examResultDetailsDto = new ExamResultDetailsDto();
             examResultDetailsDto.setQuestion(question);
-            UserAnswer userAnswer = userAnswerRepository.findByExam_IdAndUser_IdAndQuestion_Id(exam.getId(), user.getId(), question.getId()).orElseThrow(EntityNotFoundException::new);
+            UserAnswer userAnswer = userAnswerRepository
+                    .findByExam_IdAndUser_IdAndQuestion_Id(exam.getId(), user.getId(), question.getId())
+                    .orElseThrow(EntityNotFoundException::new);
             examResultDetailsDto.setSelectedAnswers(userAnswer.getAnswerList());
 
             examResultDetailsDtoList.add(examResultDetailsDto);

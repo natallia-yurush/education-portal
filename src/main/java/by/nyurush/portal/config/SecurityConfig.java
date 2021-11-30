@@ -27,8 +27,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-//        http.sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
         http
                 .httpBasic().disable()
                 .csrf().disable()
@@ -38,8 +36,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/*").hasRole("ADMIN")
                 .antMatchers("/student/*").hasRole("STUDENT")
                 .antMatchers("/teacher/*").hasRole("TEACHER")
-
                 .anyRequest().authenticated()
+                .and()
+                .exceptionHandling().accessDeniedPage("/access-denied")
                 .and()
                 .apply(new JwtConfigurer(jwtTokenProvider));
     }
@@ -63,6 +62,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/auth/check_code",
                 "/articles"
         );
-
     }
 }

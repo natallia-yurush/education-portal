@@ -117,4 +117,9 @@ public class AuthController {
 
         return "redirect:/";
     }
+
+    @RequestMapping("/access-denied")
+    public String  accessdenied() {
+        return "fragment/access-denied";
+    }
 }

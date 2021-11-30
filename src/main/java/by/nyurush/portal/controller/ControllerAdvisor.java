@@ -4,6 +4,7 @@ import by.nyurush.portal.exception.EntityAlreadyExistException;
 import by.nyurush.portal.exception.RedisCodeNotFoundException;
 import by.nyurush.portal.exception.user.UserAlreadyExistException;
 import by.nyurush.portal.exception.user.UserAlreadyIsActiveException;
+import by.nyurush.portal.exception.user.UserIsNotActiveException;
 import by.nyurush.portal.exception.user.UserNotFoundException;
 import by.nyurush.portal.security.jwt.JwtAuthenticationException;
 import org.postgresql.util.PSQLException;
@@ -45,6 +46,13 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
     @ExceptionHandler({NoPermissionException.class, JwtAuthenticationException.class})
     public ResponseEntity<?> handleNoPermissionException() {
         return new ResponseEntity<>(FORBIDDEN);
+    }
+
+    @ExceptionHandler({UserIsNotActiveException.class})
+    public String handleUserIsNotActiveException(HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttrs) {
+        redirectAttrs.addFlashAttribute("error", "User is not active. Please check your email.");
+        response.setStatus(FORBIDDEN.value());
+        return "redirect:" + request.getHeader("referer");
     }
 
     @ExceptionHandler({BadCredentialsException.class})
