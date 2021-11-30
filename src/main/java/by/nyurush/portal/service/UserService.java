@@ -32,4 +32,6 @@ public interface UserService {
 
     void unassignExam(Long userId, Long examId);
 
+    User save(User user);
+
 }

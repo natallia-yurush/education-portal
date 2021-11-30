@@ -206,7 +206,6 @@
                                         <td th:text="${user.id}"></td>
                                         <td th:text="${user.completeName}"></td>
                                         <td class="text-right">
-                                            <a class="btn btn-sm bg3" href="#"><i class="fa fa-edit"></i> edit</a>
                                             <a class="btn btn-sm bg1" data-toggle="modal"
                                                data-target="#delete"><i
                                                     class="fa fa-trash-alt"></i> delete</a>
@@ -218,7 +217,8 @@
                                                     <div class="modal-body text-center">
                                                         <img src="/img/sent.png" alt="" width="50" height="46">
                                                         <h3>Are you sure want to delete this Exam?</h3>
-                                                        <form action="#" th:action="@{${'/teacher/unassign/' + user.id + '/' + exam.id}}"
+                                                        <form action="#"
+                                                              th:action="@{${'/teacher/unassign/' + user.id + '/' + exam.id}}"
                                                               th:method="post">
                                                             <div class="m-t-20"><a class="btn btn-white"
                                                                                    data-dismiss="modal">Close</a>
@@ -252,7 +252,6 @@
 <!-- ./wrapper -->
 
 
-
 <div id="add" class="modal animated rubberBand delete-modal" role="dialog">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -261,29 +260,32 @@
                 <form method="post" th:action="@{/teacher/assign-exam}" th:object="${assignExam}">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-3">
-                                <div class="card-header">
-                                    <span class="fa fa-certificate"> Assign Exam to Student</span>
+                            <div class="col-md-12 float-left">
+                                <div class="float-left">
+                                    <span class="fa fa-user"> Assign Exam to Student</span>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label>Exam id</label>
-                                            <input type="text" class="form-control" placeholder="Course Name"
-                                                   th:field="*{examId}">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label>Student Id</label>
-                                            <textarea class="form-control" th:field="*{userId}"></textarea>
-                                        </div>
+                            </div>
+                            <div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="float-left">Exam id</label>
+                                        <input type="text" class="form-control" placeholder="Exam Id"
+                                               th:field="*{examId}">
                                     </div>
                                 </div>
-                                <div class="col-md-12">
-                                    <button type="submit" class="btn bg2">Save</button>
-                                    <button type="reset" class="btn bg1">Cancel</button>
+                            </div>
+                            <div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="float-left">Student Id</label>
+                                        <input class="form-control" placeholder="User Id" th:field="*{userId}">
+                                    </div>
                                 </div>
+                            </div>
+                            <div class="col-md-12">
+                                <button type="submit" class="btn bg2">Save</button>
+                                <div class="m-t-20"><a class="btn btn-white"
+                                                       data-dismiss="modal">Cancel</a></div>
                             </div>
                         </div>
                     </div>

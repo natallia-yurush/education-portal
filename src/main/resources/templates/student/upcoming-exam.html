@@ -152,7 +152,7 @@
                          <td th:text="${exam.passingScore}"></td>
                          <td th:text="${exam.timerInMinutes}"></td>
                          <td>
-                             <a class="btn btn-sm bg3" href="#"><i class="fa fa-file-word"></i> Take Exam</a>
+                             <a class="btn btn-sm bg3" th:href="@{${'/student/test/' + exam.id}}"><i class="fa fa-file-word"></i> Take Exam</a>
                          </td>
                      </tr>
 

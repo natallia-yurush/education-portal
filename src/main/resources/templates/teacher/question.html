@@ -236,8 +236,6 @@
                                     </td>
 
                                     <td class="text-right">
-                                        <a class="btn btn-sm bg3" th:action="@{${'question/edit/'+ question.id}}" data-toggle="modal">
-                                            <i class="fa fa-edit"></i> edit</a>
                                         <a class="btn btn-sm bg1" data-toggle="modal" data-target="#delete"><i
                                                 class="fa fa-trash-alt"></i> delete</a>
                                     </td>
@@ -259,80 +257,6 @@
                                             </div>
                                         </div>
                                     </div>
-
-<!--                                    <div id="edit" class="modal animated rubberBand delete-modal" role="dialog">-->
-<!--                                        <div class="modal-dialog modal-dialog-centered modal-lg">-->
-<!--                                            <div class="modal-content">-->
-<!--                                                <div class="modal-body text-center">-->
-
-<!--                                                    <form action="#" th:action="@{/teacher/question}" th:object="${testItem}"-->
-<!--                                                          method="post">-->
-
-<!--                                                        <input class="form-control"-->
-<!--                                                               type="hidden"-->
-<!--                                                               th:value="${question.id}" id="id" name="id"/>-->
-
-<!--                                                        <div class="col-md-12">-->
-<!--                                                            <div class="form-group">-->
-<!--                                                                <label for="examId" class="float-left">Exam Id</label>-->
-<!--                                                                <input id="examId" name="examId" type="text" class="form-control" placeholder="exam id"-->
-<!--                                                                       th:value="${question.exam.id}">-->
-<!--                                                            </div>-->
-<!--                                                        </div>-->
-
-<!--                                                        <div class="col-md-12">-->
-<!--                                                            <div class="form-group">-->
-<!--                                                                <label for="questionText" class="float-left">Question Text</label>-->
-<!--                                                                <input id="questionText" name="questionText" type="text" class="form-control"-->
-<!--                                                                       placeholder="Question Text" th:value="${question.text}">-->
-<!--                                                            </div>-->
-<!--                                                        </div>-->
-<!--                                                        <fieldset>   &lt;!&ndash; id="answers" &ndash;&gt;-->
-<!--                                                            <table>-->
-<!--                                                                <thead>-->
-<!--                                                                <tr>-->
-<!--                                                                    <th><label for="examId" class="float-left">Answer options</label></th>-->
-<!--                                                                </tr>-->
-<!--                                                                </thead>-->
-<!--                                                                <tbody>-->
-<!--                                                                <tr th:each="answer, itemStat : ${question.answerList}">-->
-<!--                                                                    <td>-->
-<!--                                                                        <div class="col-md-12">-->
-<!--                                                                            <div class="form-group">-->
-<!--                                                                                <input class="form-control" th:id="${testItem.answers[__${itemStat.index}__].correct}"-->
-<!--                                                                                       th:name="${testItem.answers[__${itemStat.index}__].correct}"-->
-<!--                                                                                       th:value="${answer.text}"/>-->
-<!--                                                                            </div>-->
-<!--                                                                        </div>-->
-<!--                                                                    </td>-->
-<!--                                                                    <td>-->
-<!--                                                                        <div class="col-md-12">-->
-<!--                                                                            <div class="form-group">-->
-<!--                                                                                <input type="checkbox" th:id="${testItem.answers[__${itemStat.index}__].correct}"-->
-<!--                                                                                       th:name="${testItem.answers[__${itemStat.index}__].correct}"-->
-<!--                                                                                       th:value="${answer.correct}">-->
-<!--                                                                            </div>-->
-<!--                                                                        </div>-->
-<!--                                                                    </td>-->
-
-<!--                                                                </tr>-->
-
-<!--                                                                </tbody>-->
-<!--                                                            </table>-->
-
-<!--                                                        </fieldset>-->
-
-<!--                                                        <button type="button" class="link" name="addItem">Add item</button>-->
-
-<!--                                                        <div class="card-footer">-->
-<!--                                                            <button type="submit" class="btn bg2">Save</button>-->
-<!--                                                        </div>-->
-
-<!--                                                    </form>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
 
                                 </tr>
 

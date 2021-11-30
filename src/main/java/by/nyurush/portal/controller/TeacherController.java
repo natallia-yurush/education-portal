@@ -3,6 +3,7 @@ package by.nyurush.portal.controller;
 import by.nyurush.portal.dto.AnswerDto;
 import by.nyurush.portal.dto.AssignExamDto;
 import by.nyurush.portal.dto.ExamDto;
+import by.nyurush.portal.dto.ExamResultDetailsDto;
 import by.nyurush.portal.dto.ExamResultSummaryDto;
 import by.nyurush.portal.dto.TestItemDto;
 import by.nyurush.portal.entity.Exam;
@@ -30,6 +31,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
@@ -50,10 +52,8 @@ public class TeacherController {
 
     @GetMapping("/index")
     public String getIndex(Model model) {
-
         model.addAttribute("studentsNumber", userRepository.countUserByRole(UserRole.ROLE_STUDENT));
         model.addAttribute("examNumber", examRepository.count());
-
         return "teacher/index";
     }
 
@@ -131,7 +131,7 @@ public class TeacherController {
 
     @GetMapping("/assign-exam")
     public String assignExam(Model model) {
-        List<Exam> examList = examRepository.findByUserListIsNotNull();
+        Set<Exam> examList = examRepository.findByUserListIsNotNull();
         model.addAttribute("exams", examList);
         model.addAttribute("assignExam", new AssignExamDto());
         return "teacher/assign-exam";
@@ -146,7 +146,7 @@ public class TeacherController {
         return "redirect:assign-exam";
     }
 
-    @PostMapping("/unassign/{userId}/{courseId}")
+    @PostMapping("/unassign/{userId}/{examId}")
     public String unassignExam(@PathVariable("userId") Long userId,
                                @PathVariable("examId") Long examId) {
         userService.unassignExam(userId, examId);
@@ -160,12 +160,11 @@ public class TeacherController {
         return "teacher/exam-result";
     }
 
-    @GetMapping("/score-card/{userId}/{examId}")
-    public String viewExamResults(@PathVariable Long userId,
-                                  @PathVariable Long examId,
+    @GetMapping("/score-card/{examResultId}")
+    public String viewExamResults(@PathVariable Long examResultId,
                                   Model model) {
-        ExamResult examResult = examResultRepository.findByUser_IdAndExam_Id(userId, examId).orElseThrow(EntityNotFoundException::new);
-        model.addAttribute("examResult", examResult);
+        List<ExamResultDetailsDto> examResultDetailsDtoList = examResultService.getExamResultDetails(examResultId);
+        model.addAttribute("examResult", examResultDetailsDtoList);
         return "teacher/view-score";
     }
 
@@ -185,5 +184,4 @@ public class TeacherController {
 
         return "teacher/summary";
     }
-
 }

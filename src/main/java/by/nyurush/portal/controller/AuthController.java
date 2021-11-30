@@ -3,7 +3,6 @@ package by.nyurush.portal.controller;
 import by.nyurush.portal.dto.AuthorizationDto;
 import by.nyurush.portal.entity.User;
 import by.nyurush.portal.entity.UserRole;
-import by.nyurush.portal.exception.user.UserAlreadyIsActiveException;
 import by.nyurush.portal.exception.user.UserIsNotActiveException;
 import by.nyurush.portal.security.jwt.JwtTokenProvider;
 import by.nyurush.portal.service.impl.UserServiceImpl;
@@ -58,12 +57,8 @@ public class AuthController {
             }
 
             String token = jwtTokenProvider.createToken(email, singletonList(user.getRole()));
-
-            // create a cookie
             Cookie cookie = new Cookie("Authorization", token);
             cookie.setMaxAge(7 * 24 * 60 * 60); // expires in 7 days
-
-            //add cookie to response
             response.addCookie(cookie);
 
             if (user.getRole() == UserRole.ROLE_ADMIN) {

@@ -86,7 +86,7 @@ public class StudentController {
             model.addAttribute("examId", examId);
             return "student/test";
         } else {
-            return "redirect:http://localhost:8080/test/calculate/" + examId; //todo calculate  result
+            return "redirect:http://localhost:8080/student/test/calculate/" + examId; //todo calculate  result
         }
     }
 
@@ -116,15 +116,15 @@ public class StudentController {
 
     @GetMapping("/test/calculate/{examId}")
     public String calculateResult(@PathVariable Long examId, HttpServletRequest request) {
-        // todo check logic for deleting from upcoming exams
-        examResultService.calculateTestResult(examId);
-
-        Exam exam = examRepository.findById(examId).orElseThrow(EntityNotFoundException::new);
         String email = jwtTokenProvider.getEmail(request);
         User user = userService.findByUsername(email);
-        user.getExamList().remove(exam);
+        examResultService.calculateTestResult(user, examId);
 
-        return "redirect:/student/test/result";
+        Exam exam = examRepository.findById(examId).orElseThrow(EntityNotFoundException::new);
+        user.getExamList().remove(exam);
+        userService.save(user);
+
+        return "redirect:http://localhost:8080/student/test/result";
     }
 
     @GetMapping("/test/result/{examResultId}")
@@ -134,7 +134,6 @@ public class StudentController {
         return "student/view-score";
     }
 
-
     @GetMapping("/upcoming-exams")
     public String getUpcomingExams(Model model, HttpServletRequest request) {
         String email = jwtTokenProvider.getEmail(request);
@@ -142,7 +141,6 @@ public class StudentController {
         List<Exam> upcomingExams = examRepository.findByUserListContains(user);
 
         model.addAttribute("upcomingExams", upcomingExams);
-
         return "student/upcoming-exam";
     }
 }

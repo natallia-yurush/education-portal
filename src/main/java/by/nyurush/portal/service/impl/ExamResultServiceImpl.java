@@ -11,7 +11,6 @@ import by.nyurush.portal.entity.UserAnswer;
 import by.nyurush.portal.repository.ExamRepository;
 import by.nyurush.portal.repository.ExamResultRepository;
 import by.nyurush.portal.repository.UserAnswerRepository;
-import by.nyurush.portal.repository.UserRepository;
 import by.nyurush.portal.service.ExamResultService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -30,16 +28,12 @@ import static java.util.stream.Collectors.toList;
 public class ExamResultServiceImpl implements ExamResultService {
 
     private final ExamResultRepository examResultRepository;
-    private final UserRepository userRepository;
     private final ExamRepository examRepository;
     private final UserAnswerRepository userAnswerRepository;
 
     @Override
-    public ExamResult calculateTestResult(Long examId) {
-        //todo get user with token
-        User user = userRepository.getById(3L);
+    public ExamResult calculateTestResult(User user, Long examId) {
         Exam exam = examRepository.findById(examId).orElseThrow(EntityNotFoundException::new);
-
         List<Question> questionList = exam.getQuestionList();
 
         double allCorrectAnswers = 0;
@@ -58,6 +52,7 @@ public class ExamResultServiceImpl implements ExamResultService {
         }
 
         double score = correctUserAnswers / allCorrectAnswers * 100;
+        score = (double) Math.round(score * 100) / 100;
         boolean passed = score >= exam.getPassingScore();
 
         ExamResult examResult = new ExamResult();

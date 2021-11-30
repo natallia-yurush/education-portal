@@ -208,7 +208,7 @@
                                     <td th:unless="${result.passed}"><span class="badge bg-danger">failed</span></td>
                                     <td>
                                         <a class="btn btn-sm bg3"
-                                           th:href="@{/teacher/score-card/{userId}(userId=${result.user.id})/{examId}(examId=${result.exam.id})}">
+                                           th:href="@{${'/teacher/score-card/' + result.id}}">
                                             <i class="fa fa-eye"></i> view</a>
                                     </td>
                                     <td class="text-right">
