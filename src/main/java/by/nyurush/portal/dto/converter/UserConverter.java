@@ -20,7 +20,7 @@ public class UserConverter implements Converter<UserDto, User> {
         user.setPassword(userDto.getPassword());
         user.setEmail(userDto.getEmail());
         user.setCompleteName(getCompleteName(userDto));
-        user.setPhoto(userDto.getPhoto());
+//        user.setPhoto(userDto.getPhoto());
         return user;
     }
 

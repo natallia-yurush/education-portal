@@ -21,14 +21,19 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Base64;
 
 import static by.nyurush.portal.entity.UserRole.ROLE_STUDENT;
 import static by.nyurush.portal.entity.UserRole.ROLE_TEACHER;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Controller
 @RequestMapping(value = "/admin")
@@ -63,29 +68,33 @@ public class AdminController {
         return "admin/student";
     }
 
-    @GetMapping("/teachers")
+    @GetMapping(value = "/teachers", produces = MediaType.IMAGE_JPEG_VALUE)
     public String addTeacher(Model model) {
         model.addAttribute("user", new UserDto());
         model.addAttribute("teachers", userService.findAllTeachers());
+        model.addAttribute("imgUtil", new ImageUtil());
         return "admin/teacher";
     }
 
-    @PostMapping("/student")
-    public String addStudent(@ModelAttribute("user") UserDto userDto) {
+    @PostMapping(path = {"/teacher", "/student"})
+    public String addUser(@ModelAttribute("user") UserDto userDto,
+                          @RequestParam(value = "Uimage", required = false) MultipartFile file,
+                          HttpServletRequest request) throws IOException {
         User user = conversionService.convert(userDto, User.class);
+        if (nonNull(file)) {
+            user.setPhoto(file.getBytes());
+        }
         userDataValidator.validate(user);
-        user.setRole(ROLE_STUDENT);
-        userService.register(user);
-
-        return "redirect:students";
-    }
-
-    @PostMapping("/teacher")
-    public String addTeacher(@ModelAttribute("user") UserDto userDto) {
-        User user = conversionService.convert(userDto, User.class);
-        userDataValidator.validate(user);
-        user.setRole(UserRole.ROLE_TEACHER);
-        userService.register(user);
+        if (isNull(user.getId())) {
+            if(request.getRequestURI().contains("teacher")) {
+                user.setRole(UserRole.ROLE_TEACHER);
+            } else {
+                user.setRole(ROLE_STUDENT);
+            }
+            userService.register(user);
+        } else {
+            userService.save(user);
+        }
 
         return "redirect:teachers";
     }
@@ -128,17 +137,27 @@ public class AdminController {
 
     @GetMapping(value = "/image/display/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
     @ResponseBody
-    void showImage(@PathVariable("id") String id, HttpServletResponse response) throws IOException {
-        User user = userService.findById(Long.getLong(id));
+    void showImage(@PathVariable("id") Long id, HttpServletResponse response) throws IOException {
+        User user = userService.findById(id);
         response.setContentType("image/jpeg");
         response.getOutputStream().write(user.getPhoto());
         response.getOutputStream().close();
     }
 
+    @PostMapping("/uploadFile/{userId}")
+    public String uploadFile(@RequestParam("myfile") MultipartFile myfile,
+                             @PathVariable Long userId,
+                             HttpServletRequest request) throws IOException {
+        User user = userService.findById(userId);
+        user.setPhoto(myfile.getBytes());
+        userService.save(user);
+        return "redirect:" + request.getHeader("referer");
+    }
+
     @PostMapping("/user/delete/{id}")
-    public String deleteUser(@PathVariable("id") Long id) {
+    public String deleteUser(@PathVariable("id") Long id, HttpServletRequest request) {
         userRepository.deleteById(id);
-        return "redirect:students";
+        return "redirect:" + request.getHeader("referer");
     }
 
     @PostMapping("/course/delete/{id}")

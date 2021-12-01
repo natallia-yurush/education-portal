@@ -41,6 +41,22 @@
             background-color: rgb(4, 91, 98);
             color: rgb(211, 209, 207);
         }
+
+        .bg4 {
+            background-color: rgb(183, 169, 14);
+            color: rgb(211, 209, 207);
+        }
+
+        .crop {
+            height: 200px;
+            width: 300px;
+            overflow: hidden;
+        }
+
+        .crop img {
+            height: auto;
+            width: 300px;
+        }
     </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -177,25 +193,7 @@
                                 <tr th:each="student: ${students}">
                                     <td th:text="${student.id}"/>
                                     <td>
-
-
-                                        <img class='img-thumbnail' th:src="'data:image/jpeg;base64,' + ${imgUtil.getImgData(student.photo)}" />
-<!--                                        <img th:src="${student.photo}" >-->
-<!--                                        <img th:src="${student.photo}" >-->
-<!--                                        <input type="hidden" th:action="@{/admin/user/image/{id}(id=student.id)}">-->
-
-
-<!--                                        <img class='img-thumbnail' th:src="'data:image/jpeg;base64,' + ${imgUtil.getImgData(student.photo)}" />-->
-
-<!--                                        <img th:src="'data:image/jpeg;base64,' + ${'avatar' + student.id}" />-->
-
-
-<!--                                        <img th:src="${student.photo}" >-->
-                                        <!--                                        <img th:src="@{${'/admin/image/display/'+ student.id}}"/>-->
-<!--                                        <img th:src="@{'/admin/user/image/' + ${student.id}}">-->
-<!--                                        <img th:src="${'data:image/jpeg;charset=utf-8;base64,' + student.photo}" alt="">-->
-                                        <!--                                    <input type="hidden" id="imageBase64" value="${student.photo}" readonly></input>-->
-                                        <!--                                    <img id="imagePreview" src="#" alt="Background image" />-->
+                                        <img class='img-thumbnail crop' th:src="'data:image/jpeg;base64,' + ${imgUtil.getImgData(student.photo)}" />
                                     </td>
                                     <td th:text="${student.completeName}"/>
                                     <td th:text="${student.email}"/>
@@ -207,7 +205,28 @@
                                         <a class="btn btn-sm bg1" th:href="@{/admin/user/delete/{id}(id=${student.id})}"
                                            data-toggle="modal" th:attr="data-target='#delete'+${student.id}"><i
                                                 class="fa fa-trash-alt"></i> delete</a>
+                                        <a class="btn btn-sm bg4" href="#" data-toggle="modal" th:attr="data-target='#upload'+${student.id}"><i
+                                                class="fa fa-file-upload"></i> upload</a>
                                     </td>
+
+                                    <div th:attr="id='upload'+${student.id}" class="modal animated rubberBand delete-modal" role="dialog">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-body text-center">
+                                                    <h3>Profile Photo</h3>
+                                                    <form th:method="post" th:action="@{${'uploadFile/'+ student.id}}" enctype="multipart/form-data">
+                                                        <div class="col-md-12">
+                                                            <div class="form-group">
+                                                                <label class="float-left">Profile Photo</label>
+                                                                <input name="myfile"  type="file" accept="image/*" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                        <button type="submit" class="btn bg4">Upload</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
                                     <div th:attr="id='delete'+${student.id}" class="modal animated rubberBand delete-modal" role="dialog">
                                         <div class="modal-dialog modal-dialog-centered">
@@ -226,7 +245,6 @@
                                             </div>
                                         </div>
                                     </div>
-
 
                                     <div th:attr="id='edit'+${student.id}" class="modal animated rubberBand delete-modal" role="dialog">
                                         <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -292,16 +310,6 @@
                                                                 </div>
 
                                                                 <div class="col-md-12">
-                                                                    <div class="form-group">
-                                                                        <label for="photo"
-                                                                               class="float-left">Profile</label>
-                                                                        <input id="photo" name="photo" type="file"
-                                                                               th:value="${student.photo}"
-                                                                               class="form-control">
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-12">
                                                                     <div class="float-left">
                                                                         <span class="fa fa-user-lock"> Account</span>
                                                                     </div>
@@ -359,7 +367,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-body text-center">
-                <form method="post" th:action="@{/admin/student}" th:object="${user}">
+                <form method="post" th:action="@{/admin/student}" th:object="${user}" enctype="multipart/form-data">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-12 float-left">
@@ -401,7 +409,8 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="Uimage" class="float-left">Profile</label>
-                                    <input id="Uimage" type="file" accept="image/png, image/jpeg" class="form-control" th:field="*{photo}">
+                                    <input id="Uimage" name="Uimage"  type="file" accept="image/*" class="form-control">
+                                    <!-- th:value="*{file}"> -->
                                 </div>
                             </div>
 
@@ -418,13 +427,6 @@
                                            required pattern="^[a-zA-Z][\w-_.]{2,20}$" th:field="*{username}">
                                 </div>
                             </div>
-<!--                            <div class="col-md-6">-->
-<!--                                <div class="form-group">-->
-<!--                                    <label for="Upassword" class="float-left">Password</label>-->
-<!--                                    <input id="Upassword" type="text" class="form-control" placeholder="**********"-->
-<!--                                           th:field="*{password}">-->
-<!--                                </div>-->
-<!--                            </div>-->
                         </div>
 
                     </div>
