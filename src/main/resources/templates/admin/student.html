@@ -371,22 +371,22 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="UfirstName" class="float-left">First Name</label>
-                                    <input id="UfirstName" type="text" class="form-control" placeholder="first name"
-                                           th:field="*{firstName}">
+                                    <input id="UfirstName" type="text" class="form-control" placeholder="first name"  required
+                                           pattern="[а-яА-ЯёЁa-zA-Z\\s]{2,20}" th:field="*{firstName}">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="UmiddleName" class="float-left">Middle Name</label>
-                                    <input id="UmiddleName" type="text" class="form-control" placeholder="middle name"
-                                           th:field="*{middleName}">
+                                    <input id="UmiddleName" type="text" class="form-control" placeholder="middle name"  required
+                                           pattern="[а-яА-ЯёЁa-zA-Z\\s]{2,20}" th:field="*{middleName}">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="UlastName" class="float-left">Last Name</label>
-                                    <input id="UlastName" type="text" class="form-control" placeholder="last name"
-                                           th:field="*{lastName}">
+                                    <input id="UlastName" type="text" class="form-control" placeholder="last name"  required
+                                           pattern="[а-яА-ЯёЁa-zA-Z\\s]{2,20}" th:field="*{lastName}">
                                 </div>
                             </div>
 
@@ -415,16 +415,16 @@
                                 <div class="form-group">
                                     <label for="Uusername" class="float-left">Username</label>
                                     <input id="Uusername" type="text" class="form-control" placeholder="username"
-                                           th:field="*{username}">
+                                           required pattern="^[a-zA-Z][\w-_.]{2,20}$" th:field="*{username}">
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="Upassword" class="float-left">Password</label>
-                                    <input id="Upassword" type="text" class="form-control" placeholder="**********"
-                                           th:field="*{password}">
-                                </div>
-                            </div>
+<!--                            <div class="col-md-6">-->
+<!--                                <div class="form-group">-->
+<!--                                    <label for="Upassword" class="float-left">Password</label>-->
+<!--                                    <input id="Upassword" type="text" class="form-control" placeholder="**********"-->
+<!--                                           th:field="*{password}">-->
+<!--                                </div>-->
+<!--                            </div>-->
                         </div>
 
                     </div>

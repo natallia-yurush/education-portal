@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -76,9 +77,12 @@ public class AuthController {
     }
 
     @GetMapping("/auth/confirm/{hash_code}")
-    public String confirmUser(@PathVariable("hash_code") String hashCode) {
+    public ModelAndView confirmUser(@PathVariable("hash_code") String hashCode) {
         userService.confirmUser(hashCode);
-        return "index";
+        ModelAndView modelAndView = new ModelAndView("index");
+        modelAndView.addObject("authInfo", new AuthorizationDto());
+        modelAndView.addObject("successMessage", "Your profile was activated!");
+        return modelAndView;
     }
 
     @GetMapping("/forgot_password")
@@ -88,10 +92,11 @@ public class AuthController {
 
     @PostMapping("/forgot_password")
     public String forgotPassword(@RequestParam String email,
-                                 HttpServletResponse response) {
+                                 Model model) {
         userService.resetPassword(email);
-        //todo return page with message that everything is ok and that is needed to check email
-        return "reset-password";
+        model.addAttribute("authInfo", new AuthorizationDto());
+        model.addAttribute("successMessage", "An email has been sent. Please check your inbox.");
+        return "index";
     }
 
     @GetMapping("/reset_password/{code}")
@@ -101,10 +106,13 @@ public class AuthController {
     }
 
     @PostMapping("/reset_password/{code}")
-    public String resetPassword(@PathVariable String code,
-                                @RequestParam String newPassword) {
+    public ModelAndView resetPassword(@PathVariable String code,
+                                      @RequestParam String newPassword) {
         userService.updatePassword(code, newPassword);
-        return "redirect:http://localhost:8080";
+        ModelAndView modelAndView = new ModelAndView("index");
+        modelAndView.addObject("authInfo", new AuthorizationDto());
+        modelAndView.addObject("successMessage", "Your password was successfully changed!");
+        return modelAndView;
     }
 
     @GetMapping("/logout")
@@ -114,12 +122,11 @@ public class AuthController {
         cookie.setSecure(true);
         cookie.setHttpOnly(true);
         response.addCookie(cookie);
-
         return "redirect:/";
     }
 
     @RequestMapping("/access-denied")
-    public String  accessdenied() {
+    public String accessdenied() {
         return "fragment/access-denied";
     }
 }

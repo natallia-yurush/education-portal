@@ -55,10 +55,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 "/login",
                 "/logout",
-                "/auth/registration/**",
-                "/auth/confirm/**",
-                "/auth/forgot_password/**",
-                "/auth/reset/**",
+                "/forgot_password",
+                "/auth/registration/*",
+                "/auth/confirm/*",
+                "/auth/forgot_password/*",
+                "/reset_password/**",
                 "/auth/check_code",
                 "/articles"
         );

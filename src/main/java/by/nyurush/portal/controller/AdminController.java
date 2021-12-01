@@ -10,6 +10,7 @@ import by.nyurush.portal.repository.CourseRepository;
 import by.nyurush.portal.repository.UserRepository;
 import by.nyurush.portal.service.ExamResultService;
 import by.nyurush.portal.service.UserService;
+import by.nyurush.portal.validator.UserDataValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.MediaType;
@@ -39,6 +40,7 @@ public class AdminController {
     private final ConversionService conversionService;
     private final CourseRepository courseRepository;
     private final ExamResultService examResultService;
+    private final UserDataValidator userDataValidator;
 
     @GetMapping("/index")
     public String getIndex(Model model) {
@@ -71,6 +73,7 @@ public class AdminController {
     @PostMapping("/student")
     public String addStudent(@ModelAttribute("user") UserDto userDto) {
         User user = conversionService.convert(userDto, User.class);
+        userDataValidator.validate(user);
         user.setRole(ROLE_STUDENT);
         userService.register(user);
 
@@ -80,6 +83,7 @@ public class AdminController {
     @PostMapping("/teacher")
     public String addTeacher(@ModelAttribute("user") UserDto userDto) {
         User user = conversionService.convert(userDto, User.class);
+        userDataValidator.validate(user);
         user.setRole(UserRole.ROLE_TEACHER);
         userService.register(user);
 
@@ -122,7 +126,7 @@ public class AdminController {
         model.addAttribute("avatar" + id, base64);
     }
 
-    @GetMapping("/image/display/{id}")
+    @GetMapping(value = "/image/display/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
     @ResponseBody
     void showImage(@PathVariable("id") String id, HttpServletResponse response) throws IOException {
         User user = userService.findById(Long.getLong(id));

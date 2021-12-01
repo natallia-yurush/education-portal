@@ -17,12 +17,12 @@ import by.nyurush.portal.service.RedisService;
 import by.nyurush.portal.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.postgresql.util.PSQLException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,6 +30,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
+
+    private static final int PASSWORD_LENGTH = 15;
 
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;
@@ -49,13 +51,14 @@ public class UserServiceImpl implements UserService {
             log.warn("IN register - user with username: {} already exist", user.getEmail());
             throw new UserAlreadyExistException("User with username " + user.getEmail() + " is already exist");
         }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        String password = generateRandomPassword(PASSWORD_LENGTH);
+        user.setPassword(passwordEncoder.encode(password));
         user.setActive(false);
         User registeredUser = userRepository.save(user);
 
         String activationCode = generateCode();
         redisService.addCode(activationCode, user.getEmail());
-        mailService.sendConfirmationEmail(user.getEmail(), activationCode);
+        mailService.sendConfirmationEmail(user.getEmail(), activationCode, user.getUsername(), password);
 
         log.info("IN register - user: {} successfully registered", registeredUser);
         return registeredUser;
@@ -116,7 +119,7 @@ public class UserServiceImpl implements UserService {
         Course course = courseRepository.findById(courseId).orElseThrow(EntityNotFoundException::new); //todo
         User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
 
-        if(!user.getCourseList().add(course)) {
+        if (!user.getCourseList().add(course)) {
             throw new EntityAlreadyExistException("The object already exists in the collection.");
         }
         userRepository.save(user);
@@ -180,6 +183,17 @@ public class UserServiceImpl implements UserService {
 
     private String generateCode() {
         return UUID.randomUUID().toString();
+    }
+
+    private static String generateRandomPassword(int len) {
+        final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~`!@#$%^&*()-_=+[{]}\\|;:\'\",<.>/?";
+        SecureRandom random = new SecureRandom();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < len; i++) {
+            int randomIndex = random.nextInt(chars.length());
+            sb.append(chars.charAt(randomIndex));
+        }
+        return sb.toString();
     }
 }
 

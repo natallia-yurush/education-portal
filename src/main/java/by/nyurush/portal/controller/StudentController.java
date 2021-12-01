@@ -15,8 +15,10 @@ import by.nyurush.portal.repository.UserAnswerRepository;
 import by.nyurush.portal.security.jwt.JwtTokenProvider;
 import by.nyurush.portal.service.ExamResultService;
 import by.nyurush.portal.service.UserService;
+import by.nyurush.portal.validator.UserAnswerValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,6 +45,7 @@ public class StudentController {
     private final ConversionService conversionService;
     private final ExamResultService examResultService;
     private final ExamResultRepository examResultRepository;
+    private final UserAnswerValidator userAnswerValidator;
 
     @GetMapping("/index")
     public String getIndex(Model model, HttpServletRequest request) {
@@ -86,12 +89,14 @@ public class StudentController {
             model.addAttribute("examId", examId);
             return "student/test";
         } else {
-            return "redirect:http://localhost:8080/student/test/calculate/" + examId; //todo calculate  result
+            return "redirect:http://localhost:8080/student/test/calculate/" + examId;
         }
     }
 
     @PostMapping("/test/{examId}")
     public String answerQuestion(@PathVariable Long examId, @ModelAttribute() QuestionDto question, HttpServletRequest request) {
+        // todo check
+        userAnswerValidator.validate(question);
         UserAnswer userAnswer = conversionService.convert(question, UserAnswer.class);
         Exam exam = examRepository.findById(examId).orElseThrow(EntityNotFoundException::new);
         userAnswer.setExam(exam);

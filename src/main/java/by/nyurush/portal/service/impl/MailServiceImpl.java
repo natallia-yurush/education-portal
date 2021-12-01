@@ -8,6 +8,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
+
 @Service
 @RequiredArgsConstructor
 @PropertySource("classpath:constants.properties")
@@ -22,6 +24,8 @@ public class MailServiceImpl implements MailService {
     private String confirmMessage;
     @Value("${mail.reset.password.message}")
     private String resetPasswordMessage;
+    @Value("${mail.confirm.password.message}")
+    private String confirmPasswordMessage;
     @Value("${mail.username}")
     private String emailFrom;
     @Value("${mail.link.confirm}")
@@ -40,10 +44,12 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public void sendConfirmationEmail(String email, String code) {
+    public void sendConfirmationEmail(String email, String code, String username, String password) {
         String messageText = confirmMessage +
                 linkToConfirm + code;
-        sendEmail(email, messageText, confirmType);
+        String credentialMessage = MessageFormat.format(confirmPasswordMessage, username, password);
+        String message = messageText + credentialMessage + linkToReset + code;
+        sendEmail(email, message, confirmType);
     }
 
     @Override

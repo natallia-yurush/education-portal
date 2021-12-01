@@ -17,6 +17,7 @@ import by.nyurush.portal.repository.QuestionRepository;
 import by.nyurush.portal.repository.UserRepository;
 import by.nyurush.portal.service.ExamResultService;
 import by.nyurush.portal.service.UserService;
+import by.nyurush.portal.validator.TestItemValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Controller;
@@ -49,6 +50,7 @@ public class TeacherController {
     private final UserService userService;
     private final ConversionService conversionService;
     private final ExamResultService examResultService;
+    private final TestItemValidator testItemValidator;
 
     @GetMapping("/index")
     public String getIndex(Model model) {
@@ -95,14 +97,15 @@ public class TeacherController {
     }
 
     @PostMapping(path = {"/question", "/question/{id}"})
-    public String saveOrder(@ModelAttribute TestItemDto testItemDto) {
+    public String saveQuestion(@ModelAttribute TestItemDto testItemDto) {
+        testItemValidator.validate(testItemDto);
         Question question = conversionService.convert(testItemDto, Question.class);
         questionRepository.save(question);
         return "redirect:question";
     }
 
     @PostMapping(path = {"/addItem"})
-    public String addOrder(TestItemDto testItemDto, HttpServletRequest request, Model model) {
+    public String addItem(TestItemDto testItemDto, HttpServletRequest request, Model model) {
         testItemDto.getAnswers().add(new AnswerDto());
         if (AJAX_HEADER_VALUE.equals(request.getHeader(AJAX_HEADER_NAME))) {
             model.addAttribute("testItem", testItemDto);
