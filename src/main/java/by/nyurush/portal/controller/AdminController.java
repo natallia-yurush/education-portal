@@ -93,10 +93,14 @@ public class AdminController {
             }
             userService.register(user);
         } else {
+            User existsUser = userService.findById(user.getId());
+            user.setRole(existsUser.getRole());
+            user.setActive(existsUser.isActive());
+            user.setPhoto(existsUser.getPhoto());
             userService.save(user);
         }
 
-        return "redirect:teachers";
+        return "redirect:" + request.getHeader("referer");
     }
 
     @GetMapping("/courses")
@@ -142,16 +146,6 @@ public class AdminController {
         response.setContentType("image/jpeg");
         response.getOutputStream().write(user.getPhoto());
         response.getOutputStream().close();
-    }
-
-    @PostMapping("/uploadFile/{userId}")
-    public String uploadFile(@RequestParam("myfile") MultipartFile myfile,
-                             @PathVariable Long userId,
-                             HttpServletRequest request) throws IOException {
-        User user = userService.findById(userId);
-        user.setPhoto(myfile.getBytes());
-        userService.save(user);
-        return "redirect:" + request.getHeader("referer");
     }
 
     @PostMapping("/user/delete/{id}")

@@ -214,7 +214,7 @@
                                             <div class="modal-content">
                                                 <div class="modal-body text-center">
                                                     <h3>Profile Photo</h3>
-                                                    <form th:method="post" th:action="@{${'uploadFile/'+ student.id}}" enctype="multipart/form-data">
+                                                    <form th:method="post" th:action="@{${'/uploadFile/'+ student.id}}" enctype="multipart/form-data">
                                                         <div class="col-md-12">
                                                             <div class="form-group">
                                                                 <label class="float-left">Profile Photo</label>
