@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Exam Management System</title>
+    <title th:text="#{label.title}"></title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="/fontawesome/css/all.min.css">
     <link rel="stylesheet" href="/css/adminlte.min.css">
@@ -45,108 +45,8 @@
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
-    <!-- Navbar -->
-    <nav class="main-header navbar navbar-expand navbar-white navbar-light" style="background-color: rgba(24,57,46);">
-        <!-- Left navbar links -->
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"
-                                                                                     style="color: rgb(211, 209, 207);"></i></a>
-            </li>
-        </ul>
-        <!-- Right navbar links -->
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-                <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-                    <i class="fas fa-expand-arrows-alt" style="color: rgb(211, 209, 207);"></i>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-widget="fullscreen" th:href="@{/profile}">
-                    <i class="fas fa-user" style="color: rgb(211, 209, 207);"></i>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-widget="fullscreen" th:href="@{/logout}">
-                    <i class="fas fa-power-off" style="color: rgb(211, 209, 207);"></i>
-                </a>
-            </li>
-        </ul>
-    </nav>
-    <!-- /.navbar -->
-    <!-- Main Sidebar Container -->
-    <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: rgba(39,93,43);">
-        <!-- Brand Logo -->
-        <a href="index.html" class="brand-link animated swing">
-            <img src="/img/logo.png" alt="DSMS Logo" width="200" style="margin-bottom: -50px;">
-        </a>
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <!-- Sidebar Menu -->
-            <nav class="mt-2">
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                    data-accordion="false">
-                    <li class="nav-item">
-                        <a th:href="@{/teacher/index}" class="nav-link">
-                            <i class="nav-icon fa fa-tachometer-alt"></i>
-                            <p>
-                                Dashboard
-                            </p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a th:href="@{/teacher/exams}" class="nav-link">
-                            <i class="nav-icon fa fa-file-signature"></i>
-                            <p>
-                                Exam
-                            </p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="nav-icon far fa-file-word"></i>
-                            <p>
-                                Online Exam
-                            </p>
-                            <i class="right fas fa-angle-left"></i>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a th:href="@{/teacher/question}" class="nav-link">
-                                    <i class="nav-icon fa fa-book"></i>
-                                    <p>Question Bank</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a th:href="@{/teacher/assign-exam}" class="nav-link">
-                                    <i class="nav-icon fa fa-book"></i>
-                                    <p>Assign Exam</p>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a th:href="@{/teacher/exam-results}" class="nav-link">
-                            <i class="nav-icon fa fa-star"></i>
-                            <p>
-                                Scores
-                            </p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a th:href="@{/teacher/summary}" class="nav-link">
-                            <i class="nav-icon fa fa-poll"></i>
-                            <p>
-                                Exam Result Summary
-                            </p>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-            <!-- /.sidebar-menu -->
-        </div>
-        <!-- /.sidebar -->
-    </aside>
+    <div th:insert="/fragment/teacher-aside">
+    </div>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -157,14 +57,13 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0" style="color: rgb(31,108,163);"><span class="fa fa-file-word"></span> Assign
-                            Exams</h1>
+                        <h1 class="m-0" style="color: rgb(31,108,163);" th:text="#{label.assignExam}"><span class="fa fa-file-word"></span></h1>
                     </div>
                     <!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">Assign Exams</li>
+                            <li class="breadcrumb-item" th:text="#{label.home}"><a href="#"></a></li>
+                            <li class="breadcrumb-item active" th:text="#{label.assignExam}"></li>
                         </ol>
                     </div>
                     <!-- /.col -->
@@ -180,25 +79,20 @@
                 <div class="card card-info">
                     <div class="card-body">
                         <a class="btn btn-sm bg1" href="#" data-toggle="modal" data-target="#add"><i
-                                class="fa fa-plus"></i> Assign to Exam</a><br><br>
+                                class="fa fa-plus" th:text="#{label.assignToExam}"></i></a><br><br>
                         <div class="col-md-12 table-responsive">
                             <table class="table align-items-center mb-0">
                                 <thead>
                                 <tr>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Exam
-                                        Id
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" th:text="#{label.examId}">
                                     </th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        Exam Name
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" th:text="#{label.examName}">
                                     </th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Student Id
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" th:text="#{label.studentId}">
                                     </th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        Student Name
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" th:text="#{label.studentName}">
                                     </th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Action
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" th:text="#{label.action}">
                                     </th>
                                     <th class="text-secondary opacity-7"></th>
                                 </tr>
@@ -213,7 +107,7 @@
                                         <td class="text-right">
                                             <a class="btn btn-sm bg1" data-toggle="modal"
                                                data-target="#delete"><i
-                                                    class="fa fa-trash-alt"></i> delete</a>
+                                                    class="fa fa-trash-alt" th:text="#{label.delete}"></i></a>
                                         </td>
 
                                         <div id="delete" class="modal animated rubberBand delete-modal" role="dialog">
@@ -221,13 +115,13 @@
                                                 <div class="modal-content">
                                                     <div class="modal-body text-center">
                                                         <img src="/img/sent.png" alt="" width="50" height="46">
-                                                        <h3>Are you sure want to delete this Exam?</h3>
+                                                        <h3 th:text="#{message.deleteExam}"></h3>
                                                         <form action="#"
                                                               th:action="@{${'/teacher/unassign/' + user.id + '/' + exam.id}}"
                                                               th:method="post">
                                                             <div class="m-t-20"><a class="btn btn-white"
-                                                                                   data-dismiss="modal">Close</a>
-                                                                <button type="submit" class="btn bg1">Delete</button>
+                                                                                   data-dismiss="modal" th:text="#{label.close}"></a>
+                                                                <button type="submit" class="btn bg1" th:text="#{label.delete}"></button>
                                                             </div>
                                                         </form>
                                                     </div>
@@ -267,14 +161,14 @@
                         <div class="row">
                             <div class="col-md-12 float-left">
                                 <div class="float-left">
-                                    <span class="fa fa-user"> Assign Exam to Student</span>
+                                    <span class="fa fa-user" th:text="#{label.assignExamToStudent}"></span>
                                 </div>
                             </div>
                             <div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="float-left">Exam id</label>
-                                        <input type="text" class="form-control" placeholder="Exam Id"
+                                        <label class="float-left" th:text="#{label.examId}"></label>
+                                        <input type="text" class="form-control" th:attr="placeholder=#{label.examId}"
                                                th:field="*{examId}">
                                     </div>
                                 </div>
@@ -282,15 +176,15 @@
                             <div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="float-left">Student Id</label>
-                                        <input class="form-control" placeholder="User Id" th:field="*{userId}">
+                                        <label class="float-left" th:text="#{label.studentId}"></label>
+                                        <input class="form-control" th:attr="placeholder=#{label.studentId}" th:field="*{userId}">
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <button type="submit" class="btn bg2">Save</button>
+                                <button type="submit" class="btn bg2" th:text="#{label.save}"></button>
                                 <div class="m-t-20"><a class="btn btn-white"
-                                                       data-dismiss="modal">Cancel</a></div>
+                                                       data-dismiss="modal" th:text="#{label.cancel}"></a></div>
                             </div>
                         </div>
                     </div>
@@ -316,6 +210,29 @@ s
     $(function () {
         $("#example1").DataTable();
     });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#locales").change(function () {
+            var selectedOption = $('#locales').val();
+            if (selectedOption != '') {
+                window.location.replace('?lang=' + selectedOption);
+            }
+        });
+    });
+</script>
+<script type="text/javascript">
+    function b1() {
+        var x = document.getElementById("locales");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+
+        } else {
+            x.style.display = "none";
+        }
+        var x = document.getElementById("locales");
+        x.size = x.options.length;
+    }
 </script>
 </body>
 

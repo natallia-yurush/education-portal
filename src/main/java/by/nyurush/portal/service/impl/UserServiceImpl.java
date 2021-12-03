@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpServletRequest;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.UUID;
@@ -42,7 +43,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User register(User user) {
+    public User register(User user, HttpServletRequest request) {
         if (userRepository.existsByEmail(user.getEmail())) {
             log.warn("IN register - user with email: {} already exist", user.getEmail());
             throw new UserAlreadyExistException("User with email " + user.getEmail() + " is already exist");
@@ -58,7 +59,7 @@ public class UserServiceImpl implements UserService {
 
         String activationCode = generateCode();
         redisService.addCode(activationCode, user.getEmail());
-        mailService.sendConfirmationEmail(user.getEmail(), activationCode, user.getUsername(), password);
+        mailService.sendConfirmationEmail(user.getEmail(), activationCode, user.getUsername(), password, request);
 
         log.info("IN register - user: {} successfully registered", registeredUser);
         return registeredUser;
@@ -86,11 +87,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void resetPassword(String email) {
+    public void resetPassword(String email, HttpServletRequest request) {
         userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
 
         String codeToReset = generateCode();
-        mailService.sendResetPasswordEmail(email, codeToReset);
+        mailService.sendResetPasswordEmail(email, codeToReset, request);
         redisService.addCode(codeToReset, email);
 
         log.info("IN resetPassword - mail sent to user {}", email);

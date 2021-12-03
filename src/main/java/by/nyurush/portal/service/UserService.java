@@ -2,6 +2,7 @@ package by.nyurush.portal.service;
 
 import by.nyurush.portal.entity.User;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface UserService {
@@ -18,11 +19,11 @@ public interface UserService {
 
     User findByEmailOrUsername(String credentials);
 
-    User register(User user);
+    User register(User user, HttpServletRequest request);
 
     void confirmUser(String hashCode);
 
-    void resetPassword(String email);
+    void resetPassword(String email, HttpServletRequest request);
 
     void updatePassword(String code, String newPassword);
 

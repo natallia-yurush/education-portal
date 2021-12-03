@@ -29,7 +29,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 
 import static java.util.Collections.singletonList;
@@ -101,8 +100,9 @@ public class AuthController {
 
     @PostMapping("/forgot_password")
     public String forgotPassword(@RequestParam String email,
+                                 HttpServletRequest request,
                                  Model model) {
-        userService.resetPassword(email);
+        userService.resetPassword(email, request);
         model.addAttribute("authInfo", new AuthorizationDto());
         model.addAttribute("successMessage", "An email has been sent. Please check your inbox.");
         return "index";

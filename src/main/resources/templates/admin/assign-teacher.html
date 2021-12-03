@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Exam Management System</title>
+    <title th:text="#{label.title}"></title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="/fontawesome/css/all.min.css">
     <link rel="stylesheet" href="/css/adminlte.min.css">
@@ -36,97 +36,12 @@
             background-color: rgb(20, 83, 154);
             color: rgb(211, 209, 207);
         }
-
-        .bg3 {
-            background-color: rgb(4, 91, 98);
-            color: rgb(211, 209, 207);
-        }
     </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
-    <!-- Navbar -->
-    <nav class="main-header navbar navbar-expand navbar-white navbar-light" style="background-color: rgba(24,57,46);">
-        <!-- Left navbar links -->
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"
-                                                                                     style="color: rgb(211, 209, 207);"></i></a>
-            </li>
-        </ul>
-        <!-- Right navbar links -->
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-                <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-                    <i class="fas fa-expand-arrows-alt" style="color: rgb(211, 209, 207);"></i>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-widget="fullscreen" th:href="@{/logout}">
-                    <i class="fas fa-power-off" style="color: rgb(211, 209, 207);"></i>
-                </a>
-            </li>
-        </ul>
-    </nav>
-    <!-- /.navbar -->
-    <!-- Main Sidebar Container -->
-    <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: rgba(39,93,43);">
-        <!-- Brand Logo -->
-        <a th:href="@{/admin/index}" class="brand-link animated swing">
-            <img src="/img/logo.png" alt="DSMS Logo" width="200" style="margin-bottom: -50px;">
-        </a>
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <!-- Sidebar Menu -->
-            <nav class="mt-2">
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                    data-accordion="false">
-                    <li class="nav-item">
-                        <a th:href="@{/admin/index}" class="nav-link">
-                            <i class="nav-icon fa fa-tachometer-alt"></i>
-                            <p>
-                                Dashboard
-                            </p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a th:href="@{/admin/courses}" class="nav-link">
-                            <i class="nav-icon fa fa-certificate"></i>
-                            <p>
-                                Course
-                            </p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a th:href="@{/admin/teachers}" class="nav-link">
-                            <i class="nav-icon fa fa-chalkboard-teacher"></i>
-                            <p>
-                                Teacher
-                            </p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a th:href="@{/admin/students}" class="nav-link">
-                            <i class="nav-icon fa fa-user-graduate"></i>
-                            <p>
-                                Student
-                            </p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a th:href="@{/admin/assign-teacher}" class="nav-link">
-                            <i class="nav-icon fa fa-file"></i>
-                            <p>
-                                Assign Teacher
-                            </p>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-            <!-- /.sidebar-menu -->
-        </div>
-        <!-- /.sidebar -->
-    </aside>
+    <div th:insert="/fragment/admin-aside">
+    </div>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <div th:insert="/fragment/alerts">
@@ -136,14 +51,14 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0" style="color: rgb(31,108,163);"><span class="fa fa-user"></span> Assign Teacher
+                        <h1 class="m-0" style="color: rgb(31,108,163);" th:text="#{label.assignMentor}"><span class="fa fa-user"></span>
                         </h1>
                     </div>
                     <!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">Assign Teacher</li>
+                            <li class="breadcrumb-item" th:text="#{label.home}"><a href="#"></a></li>
+                            <li class="breadcrumb-item active" th:text="#{label.assignMentor}"></li>
                         </ol>
                     </div>
                     <!-- /.col -->
@@ -163,25 +78,25 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="card-header">
-                                        <span class="fa fa-book"> Assign Information</span>
+                                        <span class="fa fa-book" th:text="#{label.assignInfo}"></span>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <label>Course ID Number</label>
-                                                <input type="text" class="form-control" placeholder="ex. BSCPE" th:field="*{courseId}">
+                                                <label th:text="#{label.courseId}"></label>
+                                                <input type="text" class="form-control" th:attr="placeholder=#{label.courseId}" th:field="*{courseId}">
                                             </div>
                                         </div>
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <label>Teacher ID Number</label>
-                                                <input type="text" class="form-control" placeholder="ex. 03-121-21" th:field="*{userId}">
+                                                <label th:text="#{label.mentorId}"></label>
+                                                <input type="text" class="form-control" th:attr="placeholder=#{label.mentorId}" th:field="*{userId}">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
-                                        <button type="submit" class="btn bg2">Save</button>
-                                        <button type="reset" class="btn bg1">Cancel</button>
+                                        <button type="submit" class="btn bg2" th:text="#{label.save}"></button>
+                                        <button type="reset" class="btn bg1" th:text="#{label.cancel}"></button>
                                     </div>
                     </form>
                 </div>
@@ -191,11 +106,11 @@
                         <thead>
 
                         <tr>
-                            <th>Course Code</th>
-                            <th>Course Name</th>
-                            <th>Teacher ID No.</th>
-                            <th>Teacher</th>
-                            <th class="text-right">Action</th>
+                            <th th:text="#{label.courseId}"></th>
+                            <th th:text="#{label.courseName}"></th>
+                            <th th:text="#{label.mentorId}"></th>
+                            <th th:text="#{label.mentor}"></th>
+                            <th class="text-right" th:text="#{label.action}"></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -209,8 +124,8 @@
                                 <td class="text-right">
                                     <a class="btn btn-sm bg1"
                                        th:href="@{/admin/unassign/{userId}/{courseId}(userId=${user.id},courseId=${course.id})}"
-                                       data-toggle="modal" th:attr="data-target='#delete'+${course.id}+'-'+${user.id}"><i
-                                            class="fa fa-trash-alt"></i> unassign</a>
+                                       data-toggle="modal" th:attr="data-target='#delete'+${course.id}+'-'+${user.id}" th:text="#{label.unassign}"><i
+                                            class="fa fa-trash-alt"></i> </a>
                                 </td>
 
                                 <div th:attr="id='delete'+${course.id}+'-'+${user.id}" class="modal animated rubberBand delete-modal" role="dialog">
@@ -218,11 +133,11 @@
                                         <div class="modal-content">
                                             <div class="modal-body text-center">
                                                 <img src="/img/sent.png" alt="" width="50" height="46">
-                                                <h3>Are you sure want to delete this Assignment?</h3>
+                                                <h3 th:text="#{message.deleteAssignment}"></h3>
                                                 <form action="#" th:action="@{${'/admin/unassign/'+ user.id + '/' + course.id}}"
                                                       th:method="post">
-                                                <div class="m-t-20"><a href="#" class="btn btn-white" data-dismiss="modal">Close</a>
-                                                    <button type="submit" class="btn bg1">Delete</button>
+                                                <div class="m-t-20"><a href="#" class="btn btn-white" data-dismiss="modal" th:text="#{label.close}"></a>
+                                                    <button type="submit" class="btn bg1" th:text="#{label.delete}"></button>
                                                 </div>
                                                 </form>
                                             </div>
@@ -264,6 +179,29 @@ s
     $(function () {
         $("#example1").DataTable();
     });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#locales").change(function () {
+            var selectedOption = $('#locales').val();
+            if (selectedOption != '') {
+                window.location.replace('?lang=' + selectedOption);
+            }
+        });
+    });
+</script>
+<script type="text/javascript">
+    function b1() {
+        var x = document.getElementById("locales");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+
+        } else {
+            x.style.display = "none";
+        }
+        var x = document.getElementById("locales");
+        x.size = x.options.length;
+    }
 </script>
 </body>
 

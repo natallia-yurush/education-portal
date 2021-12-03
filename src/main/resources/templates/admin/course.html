@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Exam Management System</title>
+    <title th:text="#{label.title}"></title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="/fontawesome/css/all.min.css">
     <link rel="stylesheet" href="/css/adminlte.min.css">
@@ -46,88 +46,8 @@
 <body class="hold-transition sidebar-mini layout-fixed">
 
 <div class="wrapper">
-    <!-- Navbar -->
-    <nav class="main-header navbar navbar-expand navbar-white navbar-light" style="background-color: rgba(24,57,46);">
-        <!-- Left navbar links -->
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"
-                                                                                     style="color: rgb(211, 209, 207);"></i></a>
-            </li>
-        </ul>
-        <!-- Right navbar links -->
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-                <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-                    <i class="fas fa-expand-arrows-alt" style="color: rgb(211, 209, 207);"></i>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-widget="fullscreen" th:href="@{/logout}">
-                    <i class="fas fa-power-off" style="color: rgb(211, 209, 207);"></i>
-                </a>
-            </li>
-        </ul>
-    </nav>
-    <!-- /.navbar -->
-    <!-- Main Sidebar Container -->
-    <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: rgba(39,93,43);">
-        <!-- Brand Logo -->
-        <a th:href="@{/admin/index}" class="brand-link animated swing">
-            <img src="/img/logo.png" alt="DSMS Logo" width="200" style="margin-bottom: -50px;">
-        </a>
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <!-- Sidebar Menu -->
-            <nav class="mt-2">
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                    data-accordion="false">
-                    <li class="nav-item">
-                        <a th:href="@{/admin/index}" class="nav-link">
-                            <i class="nav-icon fa fa-tachometer-alt"></i>
-                            <p>
-                                Dashboard
-                            </p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a th:href="@{/admin/courses}" class="nav-link">
-                            <i class="nav-icon fa fa-certificate"></i>
-                            <p>
-                                Course
-                            </p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a th:href="@{/admin/teachers}" class="nav-link">
-                            <i class="nav-icon fa fa-chalkboard-teacher"></i>
-                            <p>
-                                Teacher
-                            </p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a th:href="@{/admin/students}" class="nav-link">
-                            <i class="nav-icon fa fa-user-graduate"></i>
-                            <p>
-                                Student
-                            </p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a th:href="@{/admin/assign-teacher}" class="nav-link">
-                            <i class="nav-icon fa fa-file"></i>
-                            <p>
-                                Assign Teacher
-                            </p>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-            <!-- /.sidebar-menu -->
-        </div>
-        <!-- /.sidebar -->
-    </aside>
+    <div th:insert="/fragment/admin-aside">
+    </div>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <div th:insert="/fragment/alerts">
@@ -138,14 +58,14 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0" style="color: rgb(31,108,163);"><span class="fa fa-certificate"></span> Course
+                        <h1 class="m-0" style="color: rgb(31,108,163);" th:text="#{label.course}"><span class="fa fa-certificate"></span>
                         </h1>
                     </div>
                     <!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">Course</li>
+                            <li class="breadcrumb-item" th:text="#{label.home}"><a href="#"></a></li>
+                            <li class="breadcrumb-item active" th:text="#{label.course}"></li>
                         </ol>
                     </div>
                     <!-- /.col -->
@@ -165,28 +85,28 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="card-header">
-                                        <span class="fa fa-certificate"> Course Information</span>
+                                        <span class="fa fa-certificate" th:text="#{label.courseInfo}"></span>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <label>Course Name</label>
+                                                <label th:text="#{label.courseName}"></label>
                                                 <input type="text" class="form-control"
-                                                       placeholder="Course Name"
+                                                       th:attr="placeholder=#{label.courseName}"
                                                        th:field="*{name}">
                                             </div>
                                         </div>
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <label>Description</label>
+                                                <label th:text="#{label.description}"></label>
                                                 <textarea class="form-control"
                                                           th:field="*{description}"></textarea>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
-                                        <button type="submit" class="btn bg2">Save</button>
-                                        <button type="submit" class="btn bg1">Cancel</button>
+                                        <button type="submit" class="btn bg2" th:text="#{label.save}"></button>
+                                        <button type="submit" class="btn bg1" th:text="#{label.cancel}"></button>
                                     </div>
                     </form>
                 </div>
@@ -195,10 +115,10 @@
                     <table id="example1" class="table table-bordered table-hover">
                         <thead>
                         <tr>
-                            <th>Course Code</th>
-                            <th>Course Name</th>
-                            <th>Description</th>
-                            <th class="text-right">Action</th>
+                            <th th:text="#{label.courseId}"></th>
+                            <th th:text="#{label.courseName}"></th>
+                            <th th:text="#{label.description}"></th>
+                            <th class="text-right" th:text="#{label.action}"></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -210,10 +130,9 @@
                             <td th:text="${courseDto.description}"/>
                             <td class="text-right">
                                 <a class="btn btn-sm bg3" data-toggle="modal"
-                                   th:attr="data-target='#edit'+${courseDto.id}"><i class="fa fa-edit"></i> edit</a>
+                                   th:attr="data-target='#edit'+${courseDto.id}" th:text="#{label.edit}"><i class="fa fa-edit"></i></a>
                                 <a class="btn btn-sm bg1" data-toggle="modal"
-                                   th:attr="data-target='#delete'+${courseDto.id}"><i class="fa fa-trash-alt"></i>
-                                    delete</a>
+                                   th:attr="data-target='#delete'+${courseDto.id}" th:text="#{label.delete}"><i class="fa fa-trash-alt"></i></a>
 
                             </td>
 
@@ -224,12 +143,12 @@
                                     <div class="modal-content">
                                         <div class="modal-body text-center">
                                             <img src="/img/sent.png" alt="" width="50" height="46">
-                                            <h3>Are you sure want to delete this Course?</h3>
+                                            <h3 th:text="#{message.deleteCourse}"></h3>
                                             <form th:action="@{/admin/course/delete/{id}(id=${courseDto.id})}"
                                                   th:method="post">
                                                 <div class="m-t-20"><a href="#" class="btn btn-white"
-                                                                       data-dismiss="modal">Close</a>
-                                                    <button type="submit" class="btn bg1">Delete</button>
+                                                                       data-dismiss="modal" th:text="#{label.close}"></a>
+                                                    <button type="submit" class="btn bg1" th:text="#{label.delete}"></button>
                                                 </div>
                                             </form>
                                         </div>
@@ -247,7 +166,7 @@
                                                     <div class="row">
                                                         <div class="col-md-12 float-left">
                                                             <div class="float-left">
-                                                                <span class="fa fa-certificate"> Course Information</span>
+                                                                <span class="fa fa-certificate" th:text="#{label.courseInfo}"></span>
                                                             </div>
 
                                                             <input class="form-control"
@@ -257,16 +176,16 @@
                                                             <div class="col-md-12">
                                                                 <div class="form-group">
                                                                     <br>
-                                                                    <label>Course Name</label>
+                                                                    <label th:text="#{label.courseName}"></label>
                                                                     <input id="name" name="name" type="text"
                                                                            class="form-control"
-                                                                           placeholder="Course Name"
+                                                                           th:attr="placeholder=#{label.courseName}"
                                                                            th:value="${courseDto.name}">
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-12">
                                                                 <div class="form-group">
-                                                                    <label>Description</label>
+                                                                    <label th:text="#{label.description}"></label>
                                                                     <textarea id="description" name="description"
                                                                               class="form-control"
                                                                               th:text="${courseDto.description}"></textarea>
@@ -274,8 +193,8 @@
                                                             </div>
 
                                                             <div class="col-md-12">
-                                                                <button type="submit" class="btn bg2">Save</button>
-                                                                <button type="submit" class="btn bg1">Cancel</button>
+                                                                <button type="submit" class="btn bg2" th:text="#{label.save}"></button>
+                                                                <button type="submit" class="btn bg1" th:text="#{label.cancel}"></button>
                                                             </div>
                                             </form>
                                         </div>
@@ -316,6 +235,29 @@ s
     $(function () {
         $("#example1").DataTable();
     });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#locales").change(function () {
+            var selectedOption = $('#locales').val();
+            if (selectedOption != '') {
+                window.location.replace('?lang=' + selectedOption);
+            }
+        });
+    });
+</script>
+<script type="text/javascript">
+    function b1() {
+        var x = document.getElementById("locales");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+
+        } else {
+            x.style.display = "none";
+        }
+        var x = document.getElementById("locales");
+        x.size = x.options.length;
+    }
 </script>
 </body>
 

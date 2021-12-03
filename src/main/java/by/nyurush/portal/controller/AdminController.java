@@ -86,12 +86,12 @@ public class AdminController {
         }
         userDataValidator.validate(user);
         if (isNull(user.getId())) {
-            if(request.getRequestURI().contains("teacher")) {
+            if (request.getRequestURI().contains("teacher")) {
                 user.setRole(UserRole.ROLE_TEACHER);
             } else {
                 user.setRole(ROLE_STUDENT);
             }
-            userService.register(user);
+            userService.register(user, request);
         } else {
             User existsUser = userService.findById(user.getId());
             user.setRole(existsUser.getRole());

@@ -6,8 +6,7 @@
 
 <body class="no-access">
 <div class="message">
-    <a onclick="history.back(); return false;">
-        Sorry, but you do not have access to this page or resource for some reason :(
+    <a onclick="history.back(); return false;" th:text="#{message.accessDenied}">
     </a>
 </div>
 </body>

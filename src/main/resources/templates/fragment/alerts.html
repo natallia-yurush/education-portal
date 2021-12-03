@@ -2,7 +2,7 @@
 <div th:if="${not #strings.isEmpty(infoMessage)}">
     <div class="alert alert-info">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        <strong>Info! </strong> [[${infoMessage}]]
+        <strong th:text="#{alert.info}"> </strong> [[${infoMessage}]]
     </div>
 </div>
 
@@ -11,13 +11,13 @@
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true" style="font-size:20px">&times;</span>
         </button>
-        <strong>Error! </strong> [[${errorMessage}]]
+        <strong th:text="#{alert.error}"></strong> [[${errorMessage}]]
     </div>
 </div>
 
 <div th:if="${not #strings.isEmpty(successMessage)}">
     <div class="alert alert-success alert-dismissible">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Success! </strong> [[${successMessage}]]
+        <strong th:text="#{alert.success}"></strong> [[${successMessage}]]
     </div>
 </div>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Exam Management System</title>
+    <title th:text="#{label.title}"></title>
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -45,7 +45,7 @@
         <div class="card-body">
             <form method="post" th:action="@{/login}" th:object="${authInfo}">
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Username" th:field="*{username}">
+                    <input type="text" class="form-control" th:attr="placeholder=#{label.username}" th:field="*{username}">
                     <div class="input-group-append">
                         <div class="input-group-text">
                             <span class="fas fa-user"></span>
@@ -53,7 +53,7 @@
                     </div>
                 </div>
                 <div class="input-group mb-3">
-                    <input type="password" class="form-control" placeholder="Password" th:field="*{password}">
+                    <input type="password" class="form-control" th:attr="placeholder=#{label.password}" th:field="*{password}">
                     <div class="input-group-append">
                         <div class="input-group-text">
                             <span class="fas fa-lock"></span>
@@ -68,13 +68,13 @@
                 <div class="row">
                     <div class="col-6 offset-3">
                         <button type="submit" class="btn btn-block btn-bg"
-                                style="background-color: rgb(39,93,43);color: rgb(211, 209, 207);">Sign In
+                                style="background-color: rgb(39,93,43);color: rgb(211, 209, 207);" th:text="#{label.signIn}">
                         </button>
                     </div>
                 </div>
             </form>
             <br>
-            <a class="lk" th:href="@{/forgot_password}">Forgot password?</a>
+            <a class="lk" th:href="@{/forgot_password}" th:text="#{message.forgotPassword}"></a>
         </div>
         <!-- /.card-body -->
     </div>
