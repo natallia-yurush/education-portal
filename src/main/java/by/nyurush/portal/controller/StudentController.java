@@ -18,7 +18,6 @@ import by.nyurush.portal.service.UserService;
 import by.nyurush.portal.validator.UserAnswerValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.core.convert.ConversionService;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,8 +31,13 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static by.nyurush.portal.util.Constants.HOST;
+import static by.nyurush.portal.util.Constants.INDEX;
+import static by.nyurush.portal.util.Constants.REDIRECT;
+import static by.nyurush.portal.util.Constants.STUDENT;
+
 @Controller
-@RequestMapping(value = "/student")
+@RequestMapping(value = STUDENT)
 @AllArgsConstructor
 public class StudentController {
 
@@ -47,7 +51,7 @@ public class StudentController {
     private final ExamResultRepository examResultRepository;
     private final UserAnswerValidator userAnswerValidator;
 
-    @GetMapping("/index")
+    @GetMapping(INDEX)
     public String getIndex(Model model, HttpServletRequest request) {
         String email = jwtTokenProvider.getEmail(request);
         User user = userService.findByUsername(email);
@@ -89,13 +93,12 @@ public class StudentController {
             model.addAttribute("examId", examId);
             return "student/test";
         } else {
-            return "redirect:http://localhost:8080/student/test/calculate/" + examId;
+            return REDIRECT + HOST + "/student/test/calculate/" + examId;
         }
     }
 
     @PostMapping("/test/{examId}")
     public String answerQuestion(@PathVariable Long examId, @ModelAttribute() QuestionDto question, HttpServletRequest request) {
-        // todo check
         userAnswerValidator.validate(question);
         UserAnswer userAnswer = conversionService.convert(question, UserAnswer.class);
         Exam exam = examRepository.findById(examId).orElseThrow(EntityNotFoundException::new);
@@ -105,7 +108,7 @@ public class StudentController {
         userAnswer.setUser(user);
 
         userAnswerRepository.save(userAnswer);
-        return "redirect:" + examId;
+        return REDIRECT + examId;
     }
 
     @GetMapping("/test/result")
@@ -129,7 +132,7 @@ public class StudentController {
         user.getExamList().remove(exam);
         userService.save(user);
 
-        return "redirect:http://localhost:8080/student/test/result";
+        return REDIRECT + HOST + "/student/test/result";
     }
 
     @GetMapping("/test/result/{examResultId}")

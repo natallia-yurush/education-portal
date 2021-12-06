@@ -35,8 +35,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static by.nyurush.portal.util.Constants.EXAM;
+import static by.nyurush.portal.util.Constants.EXAMS;
+import static by.nyurush.portal.util.Constants.INDEX;
+import static by.nyurush.portal.util.Constants.QUESTION;
+import static by.nyurush.portal.util.Constants.REDIRECT;
+import static by.nyurush.portal.util.Constants.TEACHER;
+
 @Controller
-@RequestMapping(value = "/teacher")
+@RequestMapping(value = TEACHER)
 @AllArgsConstructor
 public class TeacherController {
 
@@ -52,36 +59,36 @@ public class TeacherController {
     private final ExamResultService examResultService;
     private final TestItemValidator testItemValidator;
 
-    @GetMapping("/index")
+    @GetMapping(INDEX)
     public String getIndex(Model model) {
         model.addAttribute("studentsNumber", userRepository.countUserByRole(UserRole.ROLE_STUDENT));
         model.addAttribute("examNumber", examRepository.count());
         return "teacher/index";
     }
 
-    @GetMapping("/exams")
+    @GetMapping(EXAMS)
     public String getExams(Model model) {
-        model.addAttribute("exam", new ExamDto());
+        model.addAttribute(EXAM, new ExamDto());
         List<Exam> exams = examRepository.findAll();
         List<ExamDto> examDtos = exams.stream()
                 .map(exam -> conversionService.convert(exam, ExamDto.class))
                 .collect(Collectors.toList());
-        model.addAttribute("exams", examDtos);
+        model.addAttribute(EXAMS, examDtos);
 
         return "teacher/exam";
     }
 
-    @PostMapping("/exam")
-    public String addExam(@ModelAttribute("exam") ExamDto examDto) {
+    @PostMapping(EXAM)
+    public String addExam(@ModelAttribute(EXAM) ExamDto examDto) {
         Exam exam = conversionService.convert(examDto, Exam.class);
         examRepository.save(exam);
-        return "redirect:exams";
+        return REDIRECT + EXAMS;
     }
 
     @PostMapping("/exam/delete/{id}")
     public String deleteExam(@PathVariable Long id) {
         examRepository.deleteById(id);
-        return "redirect:exams";
+        return REDIRECT + EXAM;
     }
 
     @GetMapping(path = {"/question", "/question/{id}"})
@@ -101,7 +108,7 @@ public class TeacherController {
         testItemValidator.validate(testItemDto);
         Question question = conversionService.convert(testItemDto, Question.class);
         questionRepository.save(question);
-        return "redirect:question";
+        return REDIRECT + QUESTION;
     }
 
     @PostMapping(path = {"/addItem"})
@@ -118,7 +125,7 @@ public class TeacherController {
     @PostMapping("/question/delete/{id}")
     public String deleteQuestion(@PathVariable Long id) {
         questionRepository.deleteById(id);
-        return "redirect:question";
+        return REDIRECT + QUESTION;
     }
 
     @PostMapping("/question/edit/{id}")
@@ -129,31 +136,31 @@ public class TeacherController {
         question.getAnswerList().forEach(answer -> testItemDto.getAnswers().add(new AnswerDto()));
         model.addAttribute("itemToEdit", testItemDto);
 
-        return "redirect:question";
+        return REDIRECT + QUESTION;
     }
 
     @GetMapping("/assign-exam")
     public String assignExam(Model model) {
         Set<Exam> examList = examRepository.findByUserListIsNotNull();
-        model.addAttribute("exams", examList);
+        model.addAttribute(EXAMS, examList);
         model.addAttribute("assignExam", new AssignExamDto());
         return "teacher/assign-exam";
     }
 
     @PostMapping("/assign-exam")
-    public String assignExam(@ModelAttribute("exam") AssignExamDto assignExamDto) {
+    public String assignExam(@ModelAttribute(EXAM) AssignExamDto assignExamDto) {
         Exam exam = examRepository.findById(assignExamDto.getExamId()).orElseThrow(EntityNotFoundException::new);
         User user = userRepository.findById(assignExamDto.getUserId()).orElseThrow(EntityNotFoundException::new);
         user.getExamList().add(exam);
         userRepository.save(user);
-        return "redirect:assign-exam";
+        return REDIRECT + "assign-exam";
     }
 
     @PostMapping("/unassign/{userId}/{examId}")
     public String unassignExam(@PathVariable("userId") Long userId,
                                @PathVariable("examId") Long examId) {
         userService.unassignExam(userId, examId);
-        return "redirect:/teacher/assign-exam";
+        return REDIRECT + "/teacher/assign-exam";
     }
 
     @GetMapping("/exam-results")
@@ -174,7 +181,7 @@ public class TeacherController {
     @PostMapping("/exam-result/delete/{resultId}")
     public String viewExamResults(@PathVariable Long resultId) {
         examResultRepository.deleteById(resultId);
-        return "redirect:exam-results";
+        return REDIRECT + "exam-results";
     }
 
     @GetMapping("summary")

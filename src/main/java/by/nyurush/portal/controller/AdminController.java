@@ -22,18 +22,29 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Base64;
 
 import static by.nyurush.portal.entity.UserRole.ROLE_STUDENT;
 import static by.nyurush.portal.entity.UserRole.ROLE_TEACHER;
+import static by.nyurush.portal.util.Constants.COURSE;
+import static by.nyurush.portal.util.Constants.COURSES;
+import static by.nyurush.portal.util.Constants.ID;
+import static by.nyurush.portal.util.Constants.IMG_UTIL;
+import static by.nyurush.portal.util.Constants.INDEX;
+import static by.nyurush.portal.util.Constants.REDIRECT;
+import static by.nyurush.portal.util.Constants.STUDENT;
+import static by.nyurush.portal.util.Constants.STUDENTS;
+import static by.nyurush.portal.util.Constants.TEACHER;
+import static by.nyurush.portal.util.Constants.TEACHERS;
+import static by.nyurush.portal.util.Constants.USER;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.springframework.http.HttpHeaders.REFERER;
+import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 
 @Controller
 @RequestMapping(value = "/admin")
@@ -47,7 +58,7 @@ public class AdminController {
     private final ExamResultService examResultService;
     private final UserDataValidator userDataValidator;
 
-    @GetMapping("/index")
+    @GetMapping(INDEX)
     public String getIndex(Model model) {
         model.addAttribute("examNameList", examResultService.getExamNameList());
         model.addAttribute("passedList", examResultService.getPassedList());
@@ -60,24 +71,24 @@ public class AdminController {
         return "admin/index";
     }
 
-    @GetMapping(value = "/students", produces = MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping(value = STUDENTS, produces = IMAGE_JPEG_VALUE)
     public String addStudent(Model model) {
-        model.addAttribute("user", new UserDto());
-        model.addAttribute("students", userService.findAllStudents());
-        model.addAttribute("imgUtil", new ImageUtil());
+        model.addAttribute(USER, new UserDto());
+        model.addAttribute(STUDENTS, userService.findAllStudents());
+        model.addAttribute(IMG_UTIL, new ImageUtil());
         return "admin/student";
     }
 
-    @GetMapping(value = "/teachers", produces = MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping(value = TEACHERS, produces = IMAGE_JPEG_VALUE)
     public String addTeacher(Model model) {
-        model.addAttribute("user", new UserDto());
-        model.addAttribute("teachers", userService.findAllTeachers());
-        model.addAttribute("imgUtil", new ImageUtil());
+        model.addAttribute(USER, new UserDto());
+        model.addAttribute(TEACHERS, userService.findAllTeachers());
+        model.addAttribute(IMG_UTIL, new ImageUtil());
         return "admin/teacher";
     }
 
-    @PostMapping(path = {"/teacher", "/student"})
-    public String addUser(@ModelAttribute("user") UserDto userDto,
+    @PostMapping(path = {TEACHER, STUDENT})
+    public String addUser(@ModelAttribute(USER) UserDto userDto,
                           @RequestParam(value = "Uimage", required = false) MultipartFile file,
                           HttpServletRequest request) throws IOException {
         User user = conversionService.convert(userDto, User.class);
@@ -86,7 +97,7 @@ public class AdminController {
         }
         userDataValidator.validate(user);
         if (isNull(user.getId())) {
-            if (request.getRequestURI().contains("teacher")) {
+            if (request.getRequestURI().contains(TEACHER)) {
                 user.setRole(UserRole.ROLE_TEACHER);
             } else {
                 user.setRole(ROLE_STUDENT);
@@ -100,71 +111,55 @@ public class AdminController {
             userService.save(user);
         }
 
-        return "redirect:" + request.getHeader("referer");
+        return REDIRECT + request.getHeader(REFERER);
     }
 
-    @GetMapping("/courses")
+    @GetMapping(COURSES)
     public String courses(Model model) {
-        model.addAttribute("course", new CourseDto());
-        model.addAttribute("courses", courseRepository.findAll());
+        model.addAttribute(COURSE, new CourseDto());
+        model.addAttribute(COURSES, courseRepository.findAll());
 
         return "admin/course";
     }
 
-    @PostMapping("/course")
-    public String addCourse(@ModelAttribute("course") CourseDto courseDto) {
+    @PostMapping(COURSE)
+    public String addCourse(@ModelAttribute(COURSE) CourseDto courseDto) {
         Course course = conversionService.convert(courseDto, Course.class);
         courseRepository.save(course);
 
-        return "redirect:courses";
+        return REDIRECT + COURSES;
     }
 
     @GetMapping("/assign-teacher")
     public String assignTeacher(Model model) {
         model.addAttribute("assignTeacher", new AssignTeacherDto());
-        model.addAttribute("courses", courseRepository.findAll());
+        model.addAttribute(COURSES, courseRepository.findAll());
         return "admin/assign-teacher";
     }
 
     @PostMapping("/assign-teacher")
     public String assignTeacher(@ModelAttribute("assignTeacher") AssignTeacherDto assignTeacherDto) {
         userService.assignTeacher(assignTeacherDto.getUserId(), assignTeacherDto.getCourseId());
-        return "redirect:assign-teacher";
-    }
-
-    @GetMapping("/user/image/{id}")
-    public void showProductImage(@PathVariable Long id, Model model) {
-        User user = userService.findById(id);
-        String base64 = Base64.getMimeEncoder().encodeToString(user.getPhoto());
-        model.addAttribute("avatar" + id, base64);
-    }
-
-    @GetMapping(value = "/image/display/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
-    @ResponseBody
-    void showImage(@PathVariable("id") Long id, HttpServletResponse response) throws IOException {
-        User user = userService.findById(id);
-        response.setContentType("image/jpeg");
-        response.getOutputStream().write(user.getPhoto());
-        response.getOutputStream().close();
+        return  REDIRECT + "assign-teacher";
     }
 
     @PostMapping("/user/delete/{id}")
-    public String deleteUser(@PathVariable("id") Long id, HttpServletRequest request) {
+    public String deleteUser(@PathVariable(ID) Long id, HttpServletRequest request) {
         userRepository.deleteById(id);
-        return "redirect:" + request.getHeader("referer");
+        return REDIRECT + request.getHeader(REFERER);
     }
 
     @PostMapping("/course/delete/{id}")
-    public String deleteCourse(@PathVariable("id") Long id) {
+    public String deleteCourse(@PathVariable(ID) Long id) {
         courseRepository.deleteById(id);
-        return "redirect:/admin/courses";
+        return  REDIRECT + "/admin/courses";
     }
 
     @PostMapping("/unassign/{userId}/{courseId}")
     public String unassignTeacher(@PathVariable("userId") Long userId,
                                   @PathVariable("courseId") Long courseId) {
         userService.unassignTeacher(userId, courseId);
-        return "redirect:/admin/assign-teacher";
+        return REDIRECT + "/admin/assign-teacher";
     }
 
     public static class ImageUtil {

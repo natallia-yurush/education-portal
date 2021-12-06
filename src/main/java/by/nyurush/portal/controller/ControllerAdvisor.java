@@ -10,12 +10,15 @@ import by.nyurush.portal.exception.user.UserAlreadyExistException;
 import by.nyurush.portal.exception.user.UserIsNotActiveException;
 import by.nyurush.portal.exception.user.UserNotFoundException;
 import by.nyurush.portal.security.jwt.JwtAuthenticationException;
+import by.nyurush.portal.util.MessageUtil;
+import lombok.RequiredArgsConstructor;
 import org.postgresql.util.PSQLException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -24,12 +27,24 @@ import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
+
+import static by.nyurush.portal.util.Constants.ERROR;
+import static by.nyurush.portal.util.Constants.ERROR_MESSAGE;
+import static by.nyurush.portal.util.Constants.HOST;
+import static by.nyurush.portal.util.Constants.REDIRECT;
+import static by.nyurush.portal.util.MessageUtil.getMessage;
+import static org.springframework.http.HttpHeaders.REFERER;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @ControllerAdvice
+@RequiredArgsConstructor
 public class ControllerAdvisor extends ResponseEntityExceptionHandler {
+
+    private final LocaleResolver localeResolver;
 
     @ExceptionHandler({
             RedisCodeNotFoundException.class
@@ -43,73 +58,77 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
     @ExceptionHandler({UserAlreadyExistException.class})
     public String handleAlreadyExistException(HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttrs,
                                               UserAlreadyExistException e) {
-        redirectAttrs.addFlashAttribute("errorMessage", e.getMessage());
+        String errorMessage = getMessage(localeResolver, request, e.getMessageKey());
+        redirectAttrs.addFlashAttribute(ERROR_MESSAGE, errorMessage);
         response.setStatus(BAD_REQUEST.value());
-        return "redirect:" + request.getHeader("referer");
+        return REDIRECT + request.getHeader(REFERER);
     }
 
     @ExceptionHandler({JwtAuthenticationException.class})
-    public String handleNoPermissionException(HttpServletResponse response, RedirectAttributes redirectAttrs) {
-        redirectAttrs.addFlashAttribute("errorMessage", "Your token is expires. Please log in again.");
+    public String handleNoPermissionException(HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttrs) {
+        String errorMessage = getMessage(localeResolver, request, "error.message.token.expired");
+        redirectAttrs.addFlashAttribute(ERROR_MESSAGE, errorMessage);
         response.setStatus(FORBIDDEN.value());
-        return "redirect:" + "http://localhost:8080/index";
+        return REDIRECT + HOST + "/index";
     }
 
     @ExceptionHandler({UserIsNotActiveException.class})
-    public ModelAndView handleUserIsNotActiveException(HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttrs) {
+    public ModelAndView handleUserIsNotActiveException(HttpServletRequest request, UserIsNotActiveException e) {
 
         ModelAndView modelAndView = new ModelAndView("index");
         modelAndView.addObject("authInfo", new AuthorizationDto());
-        modelAndView.addObject("error", "User is not active. Please check your email.");
+        String errorMessage = getMessage(localeResolver, request, e.getMessageKey());
+        modelAndView.addObject(ERROR, errorMessage);
         return modelAndView;
-
-//        redirectAttrs.addFlashAttribute("error", "User is not active. Please check your email.");
-//        response.setStatus(FORBIDDEN.value());
-//        return "redirect:" + request.getHeader("referer");
     }
 
     @ExceptionHandler({BadCredentialsException.class})
     public String handleBadCredentialsException(HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttrs) {
-        redirectAttrs.addFlashAttribute("error", "Incorrect login or password.");
+        String errorMessage = getMessage(localeResolver, request, "error.bad.credentials");
+        redirectAttrs.addFlashAttribute(ERROR, errorMessage);
         response.setStatus(FORBIDDEN.value());
-        return "redirect:" + request.getHeader("referer");
+        return REDIRECT + request.getHeader(REFERER);
     }
 
     @ExceptionHandler({PSQLException.class, EntityAlreadyExistException.class, UserNotFoundException.class})
     public String handlePSQLException(HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttrs) {
-        redirectAttrs.addFlashAttribute("errorMessage", "Can't add data because it already exists.");
+        String errorMessage = getMessage(localeResolver, request, "error.data.exist");
+        redirectAttrs.addFlashAttribute(ERROR_MESSAGE, errorMessage);
         response.setStatus(BAD_REQUEST.value());
-        return "redirect:" + request.getHeader("referer");
+        return REDIRECT + request.getHeader(REFERER);
     }
 
     @ExceptionHandler({EntityNotFoundException.class})
     public String handleEntityNotFoundException(HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttrs) {
-        redirectAttrs.addFlashAttribute("errorMessage", "Some data cannot be found. Try again.");
+        String errorMessage = getMessage(localeResolver, request, "error.not.found.data");
+        redirectAttrs.addFlashAttribute(ERROR_MESSAGE, errorMessage);
         response.setStatus(NOT_FOUND.value());
-        return "redirect:" + request.getHeader("referer");
+        return REDIRECT + request.getHeader(REFERER);
     }
 
     @ExceptionHandler({InvalidUserDataException.class})
     public String handleInvalidUserDataException(HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttrs,
                                                  InvalidUserDataException e) {
-        redirectAttrs.addFlashAttribute("errorMessage", e.getMessage());
-        response.setStatus(BAD_REQUEST.value());
-        return "redirect:" + request.getHeader("referer");
+        String errorMessage = getMessage(localeResolver, request, e.getMessageKey());
+        redirectAttrs.addFlashAttribute(ERROR_MESSAGE, errorMessage);
+        response.setStatus(e.getHttpStatus().value());
+        return REDIRECT + request.getHeader(REFERER);
     }
 
     @ExceptionHandler({InvalidUserAnswerException.class})
     public String handleInvalidUserAnswerException(HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttrs,
                                                    InvalidUserAnswerException e) {
-        redirectAttrs.addFlashAttribute("errorMessage", e.getMessage());
+        redirectAttrs.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
         response.setStatus(BAD_REQUEST.value());
-        return "redirect:" + request.getHeader("referer");
+        return REDIRECT + request.getHeader(REFERER);
     }
 
     @ExceptionHandler({InvalidTestItemException.class})
     public String handleInvalidTestItemException(HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttrs,
                                                  InvalidTestItemException e) {
-        redirectAttrs.addFlashAttribute("errorMessage", e.getMessage());
+        redirectAttrs.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
         response.setStatus(BAD_REQUEST.value());
-        return "redirect:" + request.getHeader("referer");
+        return REDIRECT + request.getHeader(REFERER);
     }
+
 }

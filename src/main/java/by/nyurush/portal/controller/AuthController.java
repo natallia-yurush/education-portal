@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.Cookie;
@@ -31,7 +32,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static by.nyurush.portal.util.Constants.AUTH_INFO;
+import static by.nyurush.portal.util.Constants.HOST;
+import static by.nyurush.portal.util.Constants.IMG_UTIL;
+import static by.nyurush.portal.util.Constants.INDEX;
+import static by.nyurush.portal.util.Constants.REDIRECT;
+import static by.nyurush.portal.util.Constants.SUCCESS_MESSAGE;
+import static by.nyurush.portal.util.Constants.USER;
+import static by.nyurush.portal.util.MessageUtil.getMessage;
+import static java.io.File.separator;
 import static java.util.Collections.singletonList;
+import static org.springframework.http.HttpHeaders.REFERER;
 
 @Controller
 @RequestMapping
@@ -44,15 +55,16 @@ public class AuthController {
     private final JwtTokenProvider jwtTokenProvider;
     private final ConversionService conversionService;
     private final UserDataValidator userDataValidator;
+    private final LocaleResolver localeResolver;
 
     @GetMapping("/")
     public String getHomePage(Model model) {
-        model.addAttribute("authInfo", new AuthorizationDto());
-        return "index";
+        model.addAttribute(AUTH_INFO, new AuthorizationDto());
+        return INDEX;
     }
 
     @PostMapping("login")
-    public String login(@ModelAttribute("authInfo") AuthorizationDto authorizationDto, HttpServletResponse response) {
+    public String login(@ModelAttribute(AUTH_INFO) AuthorizationDto authorizationDto, HttpServletResponse response) {
         try {
             String email = authorizationDto.getUsername();
             authenticationManager.authenticate(
@@ -62,7 +74,7 @@ public class AuthController {
 
             if (!user.isActive()) {
                 log.warn("User {} is not active", email);
-                throw new UserIsNotActiveException("User " + email + " is not active");
+                throw new UserIsNotActiveException();
             }
 
             String token = jwtTokenProvider.createToken(email, singletonList(user.getRole()));
@@ -71,13 +83,13 @@ public class AuthController {
             response.addCookie(cookie);
 
             if (user.getRole() == UserRole.ROLE_ADMIN) {
-                return "redirect:http://localhost:8080/admin/index";
+                return REDIRECT + HOST + "/admin/index";
             } else if (user.getRole() == UserRole.ROLE_STUDENT) {
-                return "redirect:http://localhost:8080/student/index";
+                return REDIRECT + HOST + "/student/index";
             } else if (user.getRole() == UserRole.ROLE_TEACHER) {
-                return "redirect:http://localhost:8080/teacher/index";
+                return REDIRECT + HOST + "/teacher/index";
             } else {
-                return "index";
+                return INDEX;
             }
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username or password");
@@ -85,11 +97,13 @@ public class AuthController {
     }
 
     @GetMapping("/auth/confirm/{hash_code}")
-    public ModelAndView confirmUser(@PathVariable("hash_code") String hashCode) {
+    public ModelAndView confirmUser(@PathVariable("hash_code") String hashCode,
+                                    HttpServletRequest request) {
         userService.confirmUser(hashCode);
-        ModelAndView modelAndView = new ModelAndView("index");
-        modelAndView.addObject("authInfo", new AuthorizationDto());
-        modelAndView.addObject("successMessage", "Your profile.html was activated!");
+        ModelAndView modelAndView = new ModelAndView(INDEX);
+        modelAndView.addObject(AUTH_INFO, new AuthorizationDto());
+        modelAndView.addObject(SUCCESS_MESSAGE, getMessage(localeResolver, request,
+                "success.message.activated.user"));
         return modelAndView;
     }
 
@@ -103,8 +117,9 @@ public class AuthController {
                                  HttpServletRequest request,
                                  Model model) {
         userService.resetPassword(email, request);
-        model.addAttribute("authInfo", new AuthorizationDto());
-        model.addAttribute("successMessage", "An email has been sent. Please check your inbox.");
+        model.addAttribute(AUTH_INFO, new AuthorizationDto());
+        model.addAttribute(SUCCESS_MESSAGE, getMessage(localeResolver, request,
+                "success.message.email.sent"));
         return "index";
     }
 
@@ -116,11 +131,13 @@ public class AuthController {
 
     @PostMapping("/reset_password/{code}")
     public ModelAndView resetPassword(@PathVariable String code,
-                                      @RequestParam String newPassword) {
+                                      @RequestParam String newPassword,
+                                      HttpServletRequest request) {
         userService.updatePassword(code, newPassword);
-        ModelAndView modelAndView = new ModelAndView("index");
-        modelAndView.addObject("authInfo", new AuthorizationDto());
-        modelAndView.addObject("successMessage", "Your password was successfully changed!");
+        ModelAndView modelAndView = new ModelAndView(INDEX);
+        modelAndView.addObject(AUTH_INFO, new AuthorizationDto());
+        modelAndView.addObject(SUCCESS_MESSAGE, getMessage(localeResolver, request,
+                "success.message.password.changed"));
         return modelAndView;
     }
 
@@ -131,7 +148,7 @@ public class AuthController {
         cookie.setSecure(true);
         cookie.setHttpOnly(true);
         response.addCookie(cookie);
-        return "redirect:/";
+        return REDIRECT + separator;
     }
 
     @RequestMapping("/access-denied")
@@ -143,8 +160,8 @@ public class AuthController {
     public String viewProfile(Model model, HttpServletRequest request) {
         String email = jwtTokenProvider.getEmail(request);
         User user = userService.findByUsername(email);
-        model.addAttribute("user", user);
-        model.addAttribute("imgUtil", new AdminController.ImageUtil());
+        model.addAttribute(USER, user);
+        model.addAttribute(IMG_UTIL, new AdminController.ImageUtil());
         return "student/profile";
     }
 
@@ -157,7 +174,7 @@ public class AuthController {
         user.setActive(existsUser.isActive());
         user.setPhoto(existsUser.getPhoto());
         userService.save(user);
-        return "redirect:" + request.getHeader("referer");
+        return REDIRECT + request.getHeader(REFERER);
     }
 
     @PostMapping("/uploadFile/{userId}")
@@ -167,6 +184,6 @@ public class AuthController {
         User user = userService.findById(userId);
         user.setPhoto(myfile.getBytes());
         userService.save(user);
-        return "redirect:" + request.getHeader("referer");
+        return REDIRECT + request.getHeader(REFERER);
     }
 }

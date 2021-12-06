@@ -18,16 +18,13 @@ public class UserDataValidator {
 
     public void validate(User user) {
         if (!user.getCompleteName().matches(NAME_REGEX)) {
-            throw new InvalidUserDataException("User name is incorrect.");
+            throw new InvalidUserDataException("User name");
         }
         if (!user.getEmail().matches(EMAIL_REGEX)) {
-            throw new InvalidUserDataException("Email is incorrect.");
+            throw new InvalidUserDataException("Email");
         }
         if (!user.getUsername().matches(USERNAME_REGEX) && user.getUsername().length() > MAX_INPUT_LENGTH) {
-            throw new InvalidUserDataException("Username is incorrect");
+            throw new InvalidUserDataException("Username");
         }
-//        if (!user.getPassword().matches(PASSWORD_REGEX)) {
-//            throw new InvalidUserDataException("Password is not strong enough.");
-//        }
     }
 }
