@@ -5,6 +5,7 @@ import by.nyurush.portal.entity.Exam;
 import by.nyurush.portal.entity.User;
 import by.nyurush.portal.entity.UserRole;
 import by.nyurush.portal.exception.EntityAlreadyExistException;
+import by.nyurush.portal.exception.PortalException;
 import by.nyurush.portal.exception.RedisCodeNotFoundException;
 import by.nyurush.portal.exception.user.UserAlreadyExistException;
 import by.nyurush.portal.exception.user.UserAlreadyIsActiveException;
@@ -119,6 +120,9 @@ public class UserServiceImpl implements UserService {
     public void assignTeacher(Long userId, Long courseId) {
         Course course = courseRepository.findById(courseId).orElseThrow(EntityNotFoundException::new); //todo
         User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
+        if(!user.getRole().equals(UserRole.ROLE_TEACHER)) {
+            throw new PortalException("error.is.not.teacher");
+        }
 
         if (!user.getCourseList().add(course)) {
             throw new EntityAlreadyExistException("The object already exists in the collection.");

@@ -22,13 +22,12 @@ public class PortalException extends RuntimeException {
         this.httpStatus = httpStatus;
     }
 
-    public PortalException(final String message, final HttpStatus httpStatus) {
-        super(message);
-
+    public PortalException(final String messageKey, final HttpStatus httpStatus) {
+        this.messageKey = messageKey;
         this.httpStatus = httpStatus;
     }
 
-    public PortalException(final String message) {
-        super(message);
+    public PortalException(final String messageKey) {
+        this.messageKey = messageKey;
     }
 }

@@ -3,6 +3,7 @@ package by.nyurush.portal.controller;
 import by.nyurush.portal.dto.AuthorizationDto;
 import by.nyurush.portal.exception.EntityAlreadyExistException;
 import by.nyurush.portal.exception.InvalidTestItemException;
+import by.nyurush.portal.exception.PortalException;
 import by.nyurush.portal.exception.RedisCodeNotFoundException;
 import by.nyurush.portal.exception.user.InvalidUserAnswerException;
 import by.nyurush.portal.exception.user.InvalidUserDataException;
@@ -10,7 +11,6 @@ import by.nyurush.portal.exception.user.UserAlreadyExistException;
 import by.nyurush.portal.exception.user.UserIsNotActiveException;
 import by.nyurush.portal.exception.user.UserNotFoundException;
 import by.nyurush.portal.security.jwt.JwtAuthenticationException;
-import by.nyurush.portal.util.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import org.postgresql.util.PSQLException;
 import org.springframework.http.ResponseEntity;
@@ -27,12 +27,11 @@ import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
-
+import static by.nyurush.portal.util.Constants.AUTH_INFO;
 import static by.nyurush.portal.util.Constants.ERROR;
 import static by.nyurush.portal.util.Constants.ERROR_MESSAGE;
 import static by.nyurush.portal.util.Constants.HOST;
+import static by.nyurush.portal.util.Constants.INDEX;
 import static by.nyurush.portal.util.Constants.REDIRECT;
 import static by.nyurush.portal.util.MessageUtil.getMessage;
 import static org.springframework.http.HttpHeaders.REFERER;
@@ -75,8 +74,8 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
     @ExceptionHandler({UserIsNotActiveException.class})
     public ModelAndView handleUserIsNotActiveException(HttpServletRequest request, UserIsNotActiveException e) {
 
-        ModelAndView modelAndView = new ModelAndView("index");
-        modelAndView.addObject("authInfo", new AuthorizationDto());
+        ModelAndView modelAndView = new ModelAndView(INDEX);
+        modelAndView.addObject(AUTH_INFO, new AuthorizationDto());
         String errorMessage = getMessage(localeResolver, request, e.getMessageKey());
         modelAndView.addObject(ERROR, errorMessage);
         return modelAndView;
@@ -127,6 +126,14 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
     public String handleInvalidTestItemException(HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttrs,
                                                  InvalidTestItemException e) {
         redirectAttrs.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
+        response.setStatus(BAD_REQUEST.value());
+        return REDIRECT + request.getHeader(REFERER);
+    }
+
+    @ExceptionHandler({PortalException.class})
+    public String handlePortalException(HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttrs, PortalException e) {
+        String errorMessage = getMessage(localeResolver, request, e.getMessageKey());
+        redirectAttrs.addFlashAttribute(ERROR_MESSAGE, errorMessage);
         response.setStatus(BAD_REQUEST.value());
         return REDIRECT + request.getHeader(REFERER);
     }

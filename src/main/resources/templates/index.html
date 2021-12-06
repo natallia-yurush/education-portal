@@ -45,7 +45,7 @@
         <div class="card-body">
             <form method="post" th:action="@{/login}" th:object="${authInfo}">
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control" th:attr="placeholder=#{label.username}" th:field="*{username}">
+                    <input type="text" class="form-control" th:attr="placeholder=#{label.username}" th:field="*{username}" required>
                     <div class="input-group-append">
                         <div class="input-group-text">
                             <span class="fas fa-user"></span>
@@ -53,7 +53,7 @@
                     </div>
                 </div>
                 <div class="input-group mb-3">
-                    <input type="password" class="form-control" th:attr="placeholder=#{label.password}" th:field="*{password}">
+                    <input type="password" class="form-control" th:attr="placeholder=#{label.password}" th:field="*{password}" required>
                     <div class="input-group-append">
                         <div class="input-group-text">
                             <span class="fas fa-lock"></span>
