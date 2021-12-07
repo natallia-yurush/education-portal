@@ -262,11 +262,6 @@
 <script src="/tables/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
 <script src="/tables/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
 <script src="/tables/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-<script>
-    $(function () {
-        $("#example1").DataTable();
-    });
-</script>
 
 <script>
     // jQuery
@@ -288,12 +283,36 @@
         $.post('/question', data, replaceItems);
     });
 </script>
+<script>
+    var ru = {"sLengthMenu": "Показать _MENU_ записей на странице",
+        "sZeroRecords": "Ничего не найдено",
+        "sInfo": "Показано от _START_ по _END_ из _TOTAL_ записей",
+        "sInfoEmpty": "Показано 0 по 0 из 0 записей",
+        "sInfoFiltered": "(filtered from _MAX_ total records)",
+        "sSearch": "Поиск:",
+        oPaginate: {sFirst: "Первая", sLast: "Последняя", sNext: "След", sPrevious: "Пред"}
+    };
+
+    $(function () {
+        var lang = sessionStorage.getItem("lang");
+        if (sessionStorage.getItem("lang") === null) {
+            sessionStorage.setItem("lang", "ru");
+            lang = "ru";
+        }
+        if(lang === "ru") {
+            $("#example1").DataTable( {"oLanguage": ru});
+        } else {
+            $("#example1").DataTable();
+        }
+    });
+</script>
 <script type="text/javascript">
     $(document).ready(function () {
         $("#locales").change(function () {
             var selectedOption = $('#locales').val();
             if (selectedOption != '') {
                 window.location.replace('?lang=' + selectedOption);
+                sessionStorage.setItem("lang", selectedOption);
             }
         });
     });

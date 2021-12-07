@@ -168,6 +168,7 @@
             var selectedOption = $('#locales').val();
             if (selectedOption != '') {
                 window.location.replace('?lang=' + selectedOption);
+                sessionStorage.setItem("lang", selectedOption);
             }
         });
     });

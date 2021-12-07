@@ -72,8 +72,9 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0" style="color: rgb(31,108,163);" th:text="#{label.student}"><span class="fa fa-user-graduate"></span>
-                            </h1>
+                        <h1 class="m-0" style="color: rgb(31,108,163);" th:text="#{label.student}"><span
+                                class="fa fa-user-graduate"></span>
+                        </h1>
                     </div>
                     <!-- /.col -->
                     <div class="col-sm-6">
@@ -113,42 +114,53 @@
                                 <tr th:each="student: ${students}">
                                     <td th:text="${student.id}"/>
                                     <td>
-                                        <img class='img-thumbnail crop' th:src="'data:image/jpeg;base64,' + ${imgUtil.getImgData(student.photo)}" />
+                                        <img class='img-thumbnail crop'
+                                             th:src="'data:image/jpeg;base64,' + ${imgUtil.getImgData(student.photo)}"/>
                                     </td>
                                     <td th:text="${student.completeName}"/>
                                     <td th:text="${student.email}"/>
-                                    <td><span class="badge bg-success" th:text="${student.active}"
-                                              th:remove="tag">title</span></td>
+                                    <td th:if="${student.active}"><span class="badge bg-success"
+                                                                        th:text="#{label.active}"></span></td>
+                                    <td th:unless="${student.active}"><span class="badge bg-danger"
+                                                                            th:text="#{label.inactive}"></span></td>
                                     <td class="text-right">
-                                        <a class="btn btn-sm bg3" href="#" data-toggle="modal" th:attr="data-target='#edit'+${student.id}"><i
+                                        <a class="btn btn-sm bg3" href="#" data-toggle="modal"
+                                           th:attr="data-target='#edit'+${student.id}"><i
                                                 class="fa fa-edit" th:text="#{label.edit}"></i></a>
                                         <a class="btn btn-sm bg1" th:href="@{/admin/user/delete/{id}(id=${student.id})}"
                                            data-toggle="modal" th:attr="data-target='#delete'+${student.id}"><i
                                                 class="fa fa-trash-alt" th:text="#{label.delete}"></i> </a>
-                                        <a class="btn btn-sm bg4" href="#" data-toggle="modal" th:attr="data-target='#upload'+${student.id}"><i
+                                        <a class="btn btn-sm bg4" href="#" data-toggle="modal"
+                                           th:attr="data-target='#upload'+${student.id}"><i
                                                 class="fa fa-file-upload" th:text="#{label.upload}"></i></a>
                                     </td>
 
-                                    <div th:attr="id='upload'+${student.id}" class="modal animated rubberBand delete-modal" role="dialog">
+                                    <div th:attr="id='upload'+${student.id}"
+                                         class="modal animated rubberBand delete-modal" role="dialog">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
                                                 <div class="modal-body text-center">
                                                     <h3 th:text="#{label.profilePhoto}"></h3>
-                                                    <form th:method="post" th:action="@{${'/uploadFile/'+ student.id}}" enctype="multipart/form-data">
+                                                    <form th:method="post" th:action="@{${'/uploadFile/'+ student.id}}"
+                                                          enctype="multipart/form-data">
                                                         <div class="col-md-12">
                                                             <div class="form-group">
-                                                                <label class="float-left" th:text="#{label.profilePhoto}"></label>
-                                                                <input name="myfile"  type="file" accept="image/*" class="form-control">
+                                                                <label class="float-left"
+                                                                       th:text="#{label.profilePhoto}"></label>
+                                                                <input name="myfile" type="file" accept="image/*"
+                                                                       class="form-control">
                                                             </div>
                                                         </div>
-                                                        <button type="submit" class="btn bg4" th:text="#{label.upload}"></button>
+                                                        <button type="submit" class="btn bg4"
+                                                                th:text="#{label.upload}"></button>
                                                     </form>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div th:attr="id='delete'+${student.id}" class="modal animated rubberBand delete-modal" role="dialog">
+                                    <div th:attr="id='delete'+${student.id}"
+                                         class="modal animated rubberBand delete-modal" role="dialog">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
                                                 <div class="modal-body text-center">
@@ -157,8 +169,10 @@
                                                     <form action="#" th:action="@{${'user/delete/'+ student.id}}"
                                                           th:method="post">
                                                         <div class="m-t-20"><a class="btn btn-white"
-                                                                               data-dismiss="modal" th:text="#{label.close}"></a>
-                                                            <button type="submit" class="btn bg1" th:text="#{label.delete}"></button>
+                                                                               data-dismiss="modal"
+                                                                               th:text="#{label.close}"></a>
+                                                            <button type="submit" class="btn bg1"
+                                                                    th:text="#{label.delete}"></button>
                                                         </div>
                                                     </form>
                                                 </div>
@@ -166,7 +180,8 @@
                                         </div>
                                     </div>
 
-                                    <div th:attr="id='edit'+${student.id}" class="modal animated rubberBand delete-modal" role="dialog">
+                                    <div th:attr="id='edit'+${student.id}"
+                                         class="modal animated rubberBand delete-modal" role="dialog">
                                         <div class="modal-dialog modal-dialog-centered modal-lg">
                                             <div class="modal-content">
                                                 <div class="modal-body text-center">
@@ -176,7 +191,8 @@
                                                             <div class="row">
                                                                 <div class="col-md-12 float-left">
                                                                     <div class="float-left">
-                                                                        <span class="fa fa-user" th:text="#{label.profileInformation}"></span>
+                                                                        <span class="fa fa-user"
+                                                                              th:text="#{label.profileInformation}"></span>
                                                                     </div>
                                                                 </div>
 
@@ -198,7 +214,8 @@
 
                                                                 <div class="col-md-4">
                                                                     <div class="form-group">
-                                                                        <label for="middleName" class="float-left" th:text="#{label.middleName}"></label>
+                                                                        <label for="middleName" class="float-left"
+                                                                               th:text="#{label.middleName}"></label>
                                                                         <input id="middleName" name="middleName"
                                                                                type="text"
                                                                                th:value="${#strings.arraySplit(student.completeName, ' ')[1]}"
@@ -208,7 +225,8 @@
                                                                 </div>
                                                                 <div class="col-md-4">
                                                                     <div class="form-group">
-                                                                        <label for="lastName" class="float-left" th:text="#{label.lastName}"></label>
+                                                                        <label for="lastName" class="float-left"
+                                                                               th:text="#{label.lastName}"></label>
                                                                         <input id="lastName" name="lastName"
                                                                                th:value="${#strings.arraySplit(student.completeName, ' ')[2]}"
                                                                                type="text" class="form-control"
@@ -219,7 +237,8 @@
                                                                 <div class="col-md-6">
                                                                     <div class="form-group">
                                                                         <label for="email"
-                                                                               class="float-left" th:text="#{label.email}"></label>
+                                                                               class="float-left"
+                                                                               th:text="#{label.email}"></label>
                                                                         <input id="email" name="email" type="email"
                                                                                class="form-control"
                                                                                th:value="${student.email}"
@@ -229,13 +248,15 @@
 
                                                                 <div class="col-md-12">
                                                                     <div class="float-left">
-                                                                        <span class="fa fa-user-lock" th:text="#{label.account}"></span>
+                                                                        <span class="fa fa-user-lock"
+                                                                              th:text="#{label.account}"></span>
                                                                     </div>
                                                                 </div>
 
                                                                 <div class="col-md-6">
                                                                     <div class="form-group">
-                                                                        <label for="username" class="float-left" th:text="#{label.username}"></label>
+                                                                        <label for="username" class="float-left"
+                                                                               th:text="#{label.username}"></label>
                                                                         <input id="username" name="username"
                                                                                th:value="${student.username}"
                                                                                type="text" class="form-control"
@@ -253,9 +274,11 @@
                                                         <!-- /.card-body -->
 
                                                         <div class="card-footer">
-                                                            <button type="submit" class="btn bg2" th:text="#{label.save}"></button>
+                                                            <button type="submit" class="btn bg2"
+                                                                    th:text="#{label.save}"></button>
                                                             <div class="m-t-20"><a class="btn btn-white"
-                                                                                   data-dismiss="modal" th:text="#{label.cancel}"></a></div>
+                                                                                   data-dismiss="modal"
+                                                                                   th:text="#{label.cancel}"></a></div>
                                                         </div>
                                                     </form>
                                                 </div>
@@ -297,21 +320,24 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="UfirstName" class="float-left" th:text="#{label.firstName}"></label>
-                                    <input id="UfirstName" type="text" class="form-control" th:attr="placeholder=#{label.firstName}"  required
+                                    <input id="UfirstName" type="text" class="form-control"
+                                           th:attr="placeholder=#{label.firstName}" required
                                            pattern="[а-яА-ЯёЁa-zA-Z\\s]{2,20}" th:field="*{firstName}">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="UmiddleName" class="float-left" th:text="#{label.middleName}"></label>
-                                    <input id="UmiddleName" type="text" class="form-control" th:attr="placeholder=#{label.middleName}"  required
+                                    <input id="UmiddleName" type="text" class="form-control"
+                                           th:attr="placeholder=#{label.middleName}" required
                                            pattern="[а-яА-ЯёЁa-zA-Z\\s]{2,20}" th:field="*{middleName}">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="UlastName" class="float-left" th:text="#{label.lastName}"></label>
-                                    <input id="UlastName" type="text" class="form-control" th:attr="placeholder=#{label.lastName}"  required
+                                    <input id="UlastName" type="text" class="form-control"
+                                           th:attr="placeholder=#{label.lastName}" required
                                            pattern="[а-яА-ЯёЁa-zA-Z\\s]{2,20}" th:field="*{lastName}">
                                 </div>
                             </div>
@@ -327,7 +353,7 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="Uimage" class="float-left" th:text="#{label.profile}"></label>
-                                    <input id="Uimage" name="Uimage"  type="file" accept="image/*" class="form-control">
+                                    <input id="Uimage" name="Uimage" type="file" accept="image/*" class="form-control">
                                     <!-- th:value="*{file}"> -->
                                 </div>
                             </div>
@@ -341,7 +367,8 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="Uusername" class="float-left" th:text="#{label.username}"></label>
-                                    <input id="Uusername" type="text" class="form-control" th:attr="placeholder=#{label.username}"
+                                    <input id="Uusername" type="text" class="form-control"
+                                           th:attr="placeholder=#{label.username}"
                                            required pattern="^[a-zA-Z][\w-_.]{2,20}$" th:field="*{username}">
                                 </div>
                             </div>
@@ -370,9 +397,28 @@
 <script src="/tables/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
 <script src="/tables/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
 <script src="/tables/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+
 <script>
+    var ru = {"sLengthMenu": "Показать _MENU_ записей на странице",
+        "sZeroRecords": "Ничего не найдено",
+        "sInfo": "Показано от _START_ по _END_ из _TOTAL_ записей",
+        "sInfoEmpty": "Показано 0 по 0 из 0 записей",
+        "sInfoFiltered": "(filtered from _MAX_ total records)",
+        "sSearch": "Поиск:",
+        oPaginate: {sFirst: "Первая", sLast: "Последняя", sNext: "След", sPrevious: "Пред"}
+    };
+
     $(function () {
-        $("#example1").DataTable();
+        var lang = sessionStorage.getItem("lang");
+        if (sessionStorage.getItem("lang") === null) {
+            sessionStorage.setItem("lang", "ru");
+            lang = "ru";
+        }
+        if(lang === "ru") {
+            $("#example1").DataTable( {"oLanguage": ru});
+        } else {
+            $("#example1").DataTable();
+        }
     });
 </script>
 <script type="text/javascript">
@@ -381,6 +427,7 @@
             var selectedOption = $('#locales').val();
             if (selectedOption != '') {
                 window.location.replace('?lang=' + selectedOption);
+                sessionStorage.setItem("lang", selectedOption);
             }
         });
     });
