@@ -1,27 +1,32 @@
-package by.nyurush.portal.dto.converter;
+package by.nyurush.portal.service.impl;
 
 import by.nyurush.portal.dto.AnswerDto;
 import by.nyurush.portal.dto.TestItemDto;
 import by.nyurush.portal.entity.Answer;
 import by.nyurush.portal.entity.Exam;
 import by.nyurush.portal.entity.Question;
+import by.nyurush.portal.repository.AnswerRepository;
 import by.nyurush.portal.repository.ExamRepository;
+import by.nyurush.portal.repository.QuestionRepository;
+import by.nyurush.portal.service.QuestionService;
 import lombok.AllArgsConstructor;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
-@Component
+@Service
 @AllArgsConstructor
-public class QuestionConverter implements Converter<TestItemDto, Question> {
+public class QuestionServiceImpl implements QuestionService {
 
-    private final ExamRepository examRepository;
+    private AnswerRepository answerRepository;
+    private ExamRepository examRepository;
+    private QuestionRepository questionRepository;
 
     @Override
-    public Question convert(TestItemDto testItemDto) {
+    public Question saveQuestion(TestItemDto testItemDto) {
         Question question = new Question();
         Exam exam = examRepository.findById(testItemDto.getExamId()).orElseThrow(EntityNotFoundException::new); //todo
         question.setText(testItemDto.getQuestionText());
@@ -32,21 +37,22 @@ public class QuestionConverter implements Converter<TestItemDto, Question> {
 
         answerDtoList.forEach(answerDto -> setAnswersToQuestion(question, answerDto));
 
-        return question;
+        return questionRepository.save(question);
+    }
+
+    private void setAnswersToQuestion(Question question, AnswerDto answerDto) {
+        Optional<Answer> optionalAnswer = answerRepository.findByText(answerDto.getText());
+        Answer answer = optionalAnswer.orElseGet(() -> convertToAnswer(answerDto));
+        question.getAnswerList().add(answer);
+        if (answerDto.isCorrect()) {
+            question.getCorrectAnswerList().add(answer);
+        }
     }
 
     private Answer convertToAnswer(AnswerDto answerDto) {
         Answer answer = new Answer();
         answer.setText(answerDto.getText());
         return answer;
-    }
-
-    private void setAnswersToQuestion(Question question, AnswerDto answerDto) {
-        Answer answer = convertToAnswer(answerDto);
-        question.getAnswerList().add(answer);
-        if (answerDto.isCorrect()) {
-            question.getCorrectAnswerList().add(answer);
-        }
     }
 
 }

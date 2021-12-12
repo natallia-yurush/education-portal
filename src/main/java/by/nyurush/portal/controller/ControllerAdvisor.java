@@ -68,7 +68,7 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
         String errorMessage = getMessage(localeResolver, request, "error.message.token.expired");
         redirectAttrs.addFlashAttribute(ERROR_MESSAGE, errorMessage);
         response.setStatus(FORBIDDEN.value());
-        return REDIRECT + HOST + "/index";
+        return REDIRECT + HOST;
     }
 
     @ExceptionHandler({UserIsNotActiveException.class})

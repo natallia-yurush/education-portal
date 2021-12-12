@@ -32,7 +32,7 @@ public class Answer {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "text", unique = true)
+    @Column(name = "text", unique = true, columnDefinition = "TEXT")
     private String text;
 
     @ManyToMany(mappedBy = "answerList", cascade = CascadeType.ALL)

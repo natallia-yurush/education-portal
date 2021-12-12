@@ -4,7 +4,10 @@ import lombok.Data;
 
 @Data
 public class ExamResultSummaryDto {
+
     private String name;
+
     private int passed;
+
     private int failed;
 }

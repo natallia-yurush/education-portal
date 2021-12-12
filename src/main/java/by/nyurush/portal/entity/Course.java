@@ -33,7 +33,7 @@ public class Course {
     @Column(name = "name", unique = true)
     private String name;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @ManyToMany(mappedBy = "courseList", cascade = CascadeType.ALL)

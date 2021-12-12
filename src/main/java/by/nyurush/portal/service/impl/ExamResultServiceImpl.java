@@ -46,7 +46,7 @@ public class ExamResultServiceImpl implements ExamResultService {
 
             allCorrectAnswers += question.getCorrectAnswerList().size();
             correctUserAnswers += userAnswer.getAnswerList().stream()
-                    .filter(answer -> question.getAnswerList().contains(answer))
+                    .filter(answer -> question.getCorrectAnswerList().contains(answer))
                     .count();
 
         }

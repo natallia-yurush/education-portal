@@ -6,6 +6,7 @@ import lombok.Data;
 public class AssignExamDto {
 
     private Long examId;
+
     private Long userId;
 
 }

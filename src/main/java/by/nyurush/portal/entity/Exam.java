@@ -36,7 +36,7 @@ public class Exam {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "instruction")
+    @Column(name = "instruction", columnDefinition = "TEXT")
     private String instruction;
 
     @Column(name = "start_date")

@@ -6,8 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import java.util.Base64;
-
 @Component
 @RequiredArgsConstructor
 public class UserConverter implements Converter<UserDto, User> {
@@ -20,19 +18,10 @@ public class UserConverter implements Converter<UserDto, User> {
         user.setPassword(userDto.getPassword());
         user.setEmail(userDto.getEmail());
         user.setCompleteName(getCompleteName(userDto));
-//        user.setPhoto(userDto.getPhoto());
         return user;
     }
 
     private String getCompleteName(UserDto userDto) {
         return userDto.getLastName() + " " + userDto.getFirstName() + " " + userDto.getMiddleName();
-    }
-
-    private static String convertBinImageToString(byte[] binImage) {
-        if (binImage != null && binImage.length > 0) {
-            return Base64.getEncoder().encodeToString(binImage);
-        } else {
-            return "";
-        }
     }
 }

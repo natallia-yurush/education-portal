@@ -32,7 +32,7 @@ public class ExamConverter implements Converter<ExamDto, Exam> {
             return formatter.parse(dateValue);
         } catch (ParseException e) {
             final String message = "Exception in date parsing.";
-            throw new RuntimeException(message); //todo add custom
+            throw new RuntimeException(message);
         }
     }
 }

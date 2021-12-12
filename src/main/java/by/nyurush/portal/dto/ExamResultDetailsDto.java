@@ -8,6 +8,8 @@ import java.util.Set;
 
 @Data
 public class ExamResultDetailsDto {
+
     private Question question;
+
     private Set<Answer> selectedAnswers;
 }

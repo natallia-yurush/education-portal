@@ -4,6 +4,8 @@ import lombok.Data;
 
 @Data
 public class UserAnswerDto {
+
     private String text;
+
     private boolean selected;
 }

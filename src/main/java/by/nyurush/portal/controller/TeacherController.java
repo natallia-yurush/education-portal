@@ -16,6 +16,7 @@ import by.nyurush.portal.repository.ExamResultRepository;
 import by.nyurush.portal.repository.QuestionRepository;
 import by.nyurush.portal.repository.UserRepository;
 import by.nyurush.portal.service.ExamResultService;
+import by.nyurush.portal.service.QuestionService;
 import by.nyurush.portal.service.UserService;
 import by.nyurush.portal.validator.TestItemValidator;
 import lombok.AllArgsConstructor;
@@ -58,6 +59,7 @@ public class TeacherController {
     private final ConversionService conversionService;
     private final ExamResultService examResultService;
     private final TestItemValidator testItemValidator;
+    private final QuestionService questionService;
 
     @GetMapping(INDEX)
     public String getIndex(Model model) {
@@ -106,8 +108,7 @@ public class TeacherController {
     @PostMapping(path = {"/question", "/question/{id}"})
     public String saveQuestion(@ModelAttribute TestItemDto testItemDto) {
         testItemValidator.validate(testItemDto);
-        Question question = conversionService.convert(testItemDto, Question.class);
-        questionRepository.save(question);
+        questionService.saveQuestion(testItemDto);
         return REDIRECT + QUESTION;
     }
 
