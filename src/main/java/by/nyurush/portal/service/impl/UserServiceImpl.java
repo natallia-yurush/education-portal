@@ -118,7 +118,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void assignTeacher(Long userId, Long courseId) {
-        Course course = courseRepository.findById(courseId).orElseThrow(EntityNotFoundException::new); //todo
+        Course course = courseRepository.findById(courseId).orElseThrow(EntityNotFoundException::new);
         User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
         if(!user.getRole().equals(UserRole.ROLE_TEACHER)) {
             throw new PortalException("error.is.not.teacher");
@@ -132,7 +132,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void unassignTeacher(Long userId, Long courseId) {
-        Course course = courseRepository.findById(courseId).orElseThrow(EntityNotFoundException::new); //todo
+        Course course = courseRepository.findById(courseId).orElseThrow(EntityNotFoundException::new);
         User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
 
         user.getCourseList().remove(course);
@@ -155,7 +155,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(Long id) {
-        return userRepository.findById(id).orElseThrow(EntityNotFoundException::new); //todo add exception
+        return userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 
     @Override

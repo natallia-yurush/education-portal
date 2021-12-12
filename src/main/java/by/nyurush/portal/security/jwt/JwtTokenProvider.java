@@ -6,8 +6,6 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -61,26 +59,16 @@ public class JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest request) {
-//        String bearerToken = request.getHeader("Authorization");
-
         String bearerToken = null;
-
-        //todo CONSTANT STRING!
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("Authorization")) {
-                    //do something
-                    //value can be retrieved using #cookie.getValue()
                     bearerToken = cookie.getValue();
                 }
             }
         }
-
-        if (bearerToken != null) { //&& bearerToken.startsWith("Bearer_")
-            return bearerToken; //.substring(7);
-        }
-        return null;
+        return bearerToken;
     }
 
     public boolean validateToken(String token) {
@@ -98,11 +86,7 @@ public class JwtTokenProvider {
 
     private List<String> getRoleNames(List<UserRole> userRoles) {
         List<String> result = new ArrayList<>();
-
-        userRoles.forEach(role -> {
-            result.add(role.name());
-        });
-
+        userRoles.forEach(role -> result.add(role.name()));
         return result;
     }
 

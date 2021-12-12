@@ -28,7 +28,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public Question saveQuestion(TestItemDto testItemDto) {
         Question question = new Question();
-        Exam exam = examRepository.findById(testItemDto.getExamId()).orElseThrow(EntityNotFoundException::new); //todo
+        Exam exam = examRepository.findById(testItemDto.getExamId()).orElseThrow(EntityNotFoundException::new);
         question.setText(testItemDto.getQuestionText());
         question.setExam(exam);
         question.setAnswerList(new HashSet<>());
