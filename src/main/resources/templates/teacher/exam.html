@@ -121,7 +121,7 @@
                                                 <div class="modal-body text-center">
                                                     <img src="/img/sent.png" alt="" width="50" height="46">
                                                     <h3 th:text="#{message.deleteExam}"></h3>
-                                                    <form action="#" th:action="@{${'exam/delete/'+ item.id}}"
+                                                    <form action="#" th:action="@{/teacher/exam/delete/{id}(id=${item.id})}"
                                                           th:method="post">
                                                         <div class="m-t-20"><a href="#" class="btn btn-white"
                                                                                data-dismiss="modal" th:text="#{label.close}"></a>

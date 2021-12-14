@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 
 import static by.nyurush.portal.util.Constants.EXAM;
 import static by.nyurush.portal.util.Constants.EXAMS;
+import static by.nyurush.portal.util.Constants.HOST;
 import static by.nyurush.portal.util.Constants.INDEX;
 import static by.nyurush.portal.util.Constants.QUESTION;
 import static by.nyurush.portal.util.Constants.REDIRECT;
@@ -90,7 +91,7 @@ public class TeacherController {
     @PostMapping("/exam/delete/{id}")
     public String deleteExam(@PathVariable Long id) {
         examRepository.deleteById(id);
-        return REDIRECT + EXAM;
+        return REDIRECT + "/teacher/exams";
     }
 
     @GetMapping(path = {"/question", "/question/{id}"})
